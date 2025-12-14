@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Юридическое дерево терминов с вероятностями</title>
+    <!-- Используем CDN от cdnjs.cloudflare.com для надежности -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .description {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f1f8ff;
+            border-radius: 8px;
+        }
+        
+        .legend {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .most-probable {
+            background-color: #2ecc71;
+        }
+        
+        .selected-path {
+            background-color: #3498db;
+        }
+        
+        .clicked-path {
+            background-color: #9b59b6;
+        }
+        
+        .default-node {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #tree-container {
+            width: 100%;
+            height: 600px;
+            overflow: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fefefe;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .node {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .node circle {
+            stroke-width: 2.5px;
+        }
+        
+        .node text {
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+            transition: all 0.3s;
+        }
+        
+        .node-info {
+            position: fixed;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            min-width: 250px;
+            max-width: 300px;
+            display: none;
+            border-top: 4px solid #3498db;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .info-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .info-probability {
+            font-size: 24px;
+            font-weight: 700;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .info-path {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .info-path div {
+            margin-bottom: 5px;
+            padding: 3px 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .current-phrase {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            min-height: 60px;
+        }
+        
+        .phrase-example {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        
+        footer {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            #tree-container {
+                height: 500px;
+            }
+            
+            .node-info {
+                max-width: 250px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Дерево юридических терминов с вероятностями</h1>
+            <div class="subtitle">Визуализация влияния выбора слова на смысл фразы</div>
+        </header>
+        
+        <div class="description">
+            <p>Это интерактивное дерево демонстрирует, как выбор определенных слов в юридическом контексте может изменить смысл фразы. Каждый узел представляет собой слово (токен) с указанием вероятности его использования в данном контексте.</p>
+            <p><strong>Инструкция:</strong> Наводите курсор на узлы для предпросмотра, кликайте на узлы для фиксации выбора. Наиболее вероятный маршрут выделен зеленым цветом, фиксированный выбор - фиолетовым.</p>
+        </div>
+        
+        <div class="controls">
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color most-probable"></div>
+                    <span>Наиболее вероятный маршрут</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color clicked-path"></div>
+                    <span>Фиксированный выбор</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color selected-path"></div>
+                    <span>Предпросмотр (при наведении)</span>
+                </div>
+            </div>
+            <button id="reset-btn">Сбросить фиксированный выбор</button>
+        </div>
+        
+        <div class="current-phrase" id="current-phrase">
+            <div id="phrase-text">Выберите элементы дерева для формирования фразы</div>
+            <div class="phrase-example" id="phrase-example"></div>
+        </div>
+        
+        <div id="tree-container"></div>
+        
+        <div class="node-info" id="node-info">
+            <div class="info-title" id="info-title">Заголовок</div>
+            <div id="info-description">Описание узла</div>
+            <div class="info-probability" id="info-probability">0%</div>
+            <div class="info-path">
+                <div>Путь от корня:</div>
+                <div id="info-path"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Дерево юридических терминов | Демонстрация влияния выбора слов на смысл фразы</p>
+            <p>Вероятности указаны в процентах и отражают вероятность выбора данного слова в контексте</p>
+        </footer>
+    </div>
+
+    <script>
+        // Данные для дерева - формируем осмысленные фразы
+        const treeData = {
+            name: "Суд",
+            probability: 100,
+            description: "Государственный орган, осуществляющий правосудие",
+            children: [
+                {
+                    name: "постановил",
+                    probability: 45,
+                    description: "Вынес решение, предписание",
+                    children: [
+                        {
+                            name: "взыскать",
+                            probability: 60,
+                            description: "Принудительно взыскать денежные средства",
+                            children: [
+                                { name: "долг", probability: 40, description: "Взыскать сумму долга" },
+                                { name: "неустойку", probability: 35, description: "Взыскать сумму неустойки" },
+                                { name: "убытки", probability: 25, description: "Взыскать причиненные убытки" }
+                            ]
+                        },
+                        {
+                            name: "признать",
+                            probability: 25,
+                            description: "Установить юридический факт",
+                            children: [
+                                { name: "право", probability: 50, description: "Признать право собственности" },
+                                { name: "сделку", probability: 30, description: "Признать сделку недействительной" },
+                                { name: "факт", probability: 20, description: "Признать юридический факт" }
+                            ]
+                        },
+                        {
+                            name: "обязать",
+                            probability: 15,
+                            description: "Возложить обязанность",
+                            children: [
+                                { name: "уплатить", probability: 60, description: "Обязать уплатить денежные средства" },
+                                { name: "совершить", probability: 25, description: "Обязать совершить определенные действия" },
+                                { name: "устранить", probability: 15, description: "Обязать устранить нарушения" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "отменил",
+                    probability: 30,
+                    description: "Признал недействительным, аннулировал",
+                    children: [
+                        {
+                            name: "решение",
+                            probability: 70,
+                            description: "Отменил предыдущее судебное решение",
+                            children: [
+                                { name: "нижестоящего", probability: 60, description: "Отменил решение нижестоящего суда" },
+                                { name: "арбитражного", probability: 25, description: "Отменил решение арбитражного суда" },
+                                { name: "административное", probability: 15, description: "Отменил административное решение" }
+                            ]
+                        },
+                        {
+                            name: "приказ",
+                            probability: 20,
+                            description: "Отменил судебный приказ",
+                            children: [
+                                { name: "о взыскании", probability: 80, description: "Отменил приказ о взыскании" },
+                                { name: "исполнительный", probability: 20, description: "Отменил исполнительный приказ" }
+                            ]
+                        },
+                        {
+                            name: "постановление",
+                            probability: 10,
+                            description: "Отменил постановление",
+                            children: [
+                                { name: "судьи", probability: 70, description: "Отменил постановление судьи" },
+                                { name: "органа", probability: 30, description: "Отменил постановление государственного органа" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "удовлетворил",
+                    probability: 25,
+                    description: "Удовлетворил требования, ходатайство",
+                    children: [
+                        {
+                            name: "иск",
+                            probability: 60,
+                            description: "Удовлетворил исковые требования",
+                            children: [
+                                { name: "полностью", probability: 40, description: "Удовлетворил иск полностью" },
+                                { name: "частично", probability: 35, description: "Удовлетворил иск частично" },
+                                { name: "встречный", probability: 25, description: "Удовлетворил встречный иск" }
+                            ]
+                        },
+                        {
+                            name: "жалобу",
+                            probability: 25,
+                            description: "Удовлетворил жалобу",
+                            children: [
+                                { name: "апелляционную", probability: 50, description: "Удовлетворил апелляционную жалобу" },
+                                { name: "кассационную", probability: 30, description: "Удовлетворил кассационную жалобу" },
+                                { name: "административную", probability: 20, description: "Удовлетворил административную жалобу" }
+                            ]
+                        },
+                        {
+                            name: "ходатайство",
+                            probability: 15,
+                            description: "Удовлетворил ходатайство",
+                            children: [
+                                { name: "об отложении", probability: 40, description: "Удовлетворил ходатайство об отложении" },
+                                { name: "об истребовании", probability: 35, description: "Удовлетворил ходатайство об истребовании доказательств" },
+                                { name: "о вызове", probability: 25, description: "Удовлетворил ходатайство о вызове свидетелей" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Переменные состояния
+        let selectedNode = null;
+        let hoveredNode = null;
+        let mostProbablePath = null;
+        let mostProbableNodeNames = [];
+
+        // Находим наиболее вероятный путь
+        function findMostProbablePath(node, currentPath = [], currentProbability = 1) {
+            currentPath.push({
+                name: node.name,
+                probability: node.probability,
+                cumulativeProbability: currentProbability * (node.probability / 100)
+            });
+            
+            // Если нет детей, возвращаем путь
+            if (!node.children || node.children.length === 0) {
+                return {
+                    path: currentPath,
+                    cumulativeProbability: currentProbability * (node.probability / 100)
+                };
+            }
+            
+            // Находим наиболее вероятного ребенка
+            let mostProbableChild = node.children[0];
+            for (let child of node.children) {
+                if (child.probability > mostProbableChild.probability) {
+                    mostProbableChild = child;
+                }
+            }
+            
+            // Рекурсивно продолжаем
+            return findMostProbablePath(
+                mostProbableChild, 
+                currentPath, 
+                currentProbability * (node.probability / 100)
+            );
+        }
+
+        // Получаем путь к узлу в виде массива имен
+        function getPathToNode(node) {
+            const path = [];
+            let currentNode = node;
+            while (currentNode) {
+                path.unshift(currentNode.data.name);
+                currentNode = currentNode.parent;
+            }
+            return path;
+        }
+
+        // Формируем фразу из пути
+        function buildPhraseFromPath(path) {
+            if (!path || path.length === 0) return "Выберите элементы дерева для формирования фразы";
+            
+            let phrase = "";
+            for (let i = 0; i < path.length; i++) {
+                phrase += path[i];
+                if (i < path.length - 1) {
+                    phrase += " ";
+                }
+            }
+            
+            return phrase;
+        }
+
+        // Функция для позиционирования подсказки рядом с курсором
+        function positionTooltip(event, tooltip) {
+            const tooltipWidth = tooltip.offsetWidth;
+            const tooltipHeight = tooltip.offsetHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Позиционируем подсказку рядом с курсором
+            let x = event.clientX + 15;
+            let y = event.clientY + 15;
+            
+            // Проверяем, не выходит ли подсказка за правый край окна
+            if (x + tooltipWidth > windowWidth - 20) {
+                x = event.clientX - tooltipWidth - 15;
+            }
+            
+            // Проверяем, не выходит ли подсказка за нижний край окна
+            if (y + tooltipHeight > windowHeight - 20) {
+                y = event.clientY - tooltipHeight - 15;
+            }
+            
+            // Проверяем, не выходит ли подсказка за левый край окна
+            if (x < 20) {
+                x = 20;
+            }
+            
+            // Проверяем, не выходит ли подсказка за верхний край окна
+            if (y < 20) {
+                y = 20;
+            }
+            
+            // Устанавливаем позицию
+            tooltip.style.left = x + 'px';
+            tooltip.style.top = y + 'px';
+        }
+
+        // Строим дерево с помощью D3.js
+        function buildTree() {
+            const container = document.getElementById('tree-container');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            // Очищаем контейнер
+            d3.select("#tree-container").html("");
+            
+            // Создаем SVG элемент
+            const svg = d3.select("#tree-container")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(90, 40)"); // Увеличили отступ слева для корневого узла
+            
+            // Создаем иерархию из данных
+            const root = d3.hierarchy(treeData, d => d.children);
+            
+            // Определяем размеры дерева
+            const treeLayout = d3.tree()
+                .size([height - 100, width - 180]); // Увеличили отступ справа
+            
+            // Применяем layout к данным
+            treeLayout(root);
+            
+            // Находим наиболее вероятный путь
+            mostProbablePath = findMostProbablePath(treeData);
+            mostProbableNodeNames = mostProbablePath.path.map(node => node.name);
+            
+            // Рисуем линии (ребра)
+            svg.selectAll(".link")
+                .data(root.links())
+                .enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("d", d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x))
+                .style("stroke-width", 2)
+                .style("stroke", d => {
+                    const sourceName = d.source.data.name;
+                    const targetName = d.target.data.name;
+                    
+                    // Проверяем, находится ли текущее ребро на фиксированном пути
+                    if (selectedNode) {
+                        const selectedPath = getPathToNode(selectedNode);
+                        const sourceIndex = selectedPath.indexOf(sourceName);
+                        const targetIndex = selectedPath.indexOf(targetName);
+                        
+                        // Если оба узла на фиксированном пути и следуют друг за другом
+                        if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                            return "#9b59b6"; // Фиолетовый для фиксированного пути
+                        }
+                    }
+                    
+                    // Проверяем, находится ли текущее ребро на пути при наведении
+                    if (hoveredNode) {
+                        const hoveredPath = getPathToNode(hoveredNode);
+                        const sourceIndex = hoveredPath.indexOf(sourceName);
+                        const targetIndex = hoveredPath.indexOf(targetName);
+                        
+                        // Если оба узла на пути при наведении и следуют друг за другом
+                        if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                            return "#3498db"; // Синий для пути при наведении
+                        }
+                    }
+                    
+                    // Проверяем, находится ли текущее ребро на наиболее вероятном пути
+                    const sourceIndex = mostProbableNodeNames.indexOf(sourceName);
+                    const targetIndex = mostProbableNodeNames.indexOf(targetName);
+                    
+                    // Если оба узла на наиболее вероятном пути и следуют друг за другом
+                    if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                        return "#2ecc71"; // Зеленый для наиболее вероятного пути
+                    }
+                    
+                    return "#bdc3c7"; // Серый по умолчанию
+                });
+            
+            // Создаем узлы
+            const node = svg.selectAll(".node")
+                .data(root.descendants())
+                .enter()
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", d => `translate(${d.y},${d.x})`)
+                .on("mouseover", function(event, d) {
+                    hoveredNode = d;
+                    highlightPaths();
+                    showNodeInfo(event, d);
+                })
+                .on("mousemove", function(event, d) {
+                    // Обновляем позицию подсказки при движении курсора
+                    const tooltip = document.getElementById('node-info');
+                    if (tooltip.style.display === 'block') {
+                        positionTooltip(event, tooltip);
+                    }
+                })
+                .on("mouseout", function(event, d) {
+                    hoveredNode = null;
+                    highlightPaths();
+                    hideNodeInfo();
+                })
+                .on("click", function(event, d) {
+                    event.stopPropagation();
+                    selectedNode = d;
+                    highlightPaths();
+                    updatePhrase();
+                });
+            
+            // Добавляем круги к узлам
+            node.append("circle")
+                .attr("r", 20)
+                .style("fill", d => {
+                    const nodeName = d.data.name;
+                    
+                    // Проверяем, является ли узел фиксированным
+                    if (selectedNode && selectedNode.data.name === nodeName) {
+                        return "#9b59b6"; // Фиолетовый для фиксированного узла
+                    }
+                    
+                    // Проверяем, находится ли узел на пути при наведении
+                    if (hoveredNode) {
+                        const hoveredPath = getPathToNode(hoveredNode);
+                        if (hoveredPath.includes(nodeName)) {
+                            return "#3498db"; // Синий для узла на пути при наведении
+                        }
+                    }
+                    
+                    // Проверяем, находится ли узел на наиболее вероятном пути
+                    if (mostProbableNodeNames.includes(nodeName)) {
+                        return "#2ecc71"; // Зеленый для наиболее вероятного пути
+                    }
+                    
+                    return "#ecf0f1"; // Светло-серый по умолчанию
+                })
+                .style("stroke", d => {
+                    const nodeName = d.data.name;
+                    
+                    if (selectedNode && selectedNode.data.name === nodeName) {
+                        return "#8e44ad"; // Темно-фиолетовый обводка
+                    }
+                    
+                    if (hoveredNode) {
+                        const hoveredPath = getPathToNode(hoveredNode);
+                        if (hoveredPath.includes(nodeName)) {
+                            return "#2980b9"; // Темно-синий обводка
+                        }
+                    }
+                    
+                    if (mostProbableNodeNames.includes(nodeName)) {
+                        return "#27ae60"; // Темно-зеленый обводка
+                    }
+                    
+                    return "#bdc3c7"; // Серый обводка по умолчанию
+                })
+                .style("stroke-width", 2);
+            
+            // Добавляем текст к узлам (название)
+            node.append("text")
+                .attr("dy", ".31em")
+                .attr("x", d => d.children ? -25 : 25)
+                .style("text-anchor", d => d.children ? "end" : "start")
+                .style("font-size", "13px")
+                .style("font-weight", "600")
+                .text(d => d.data.name);
+            
+            // Добавляем текст с вероятностью
+            node.append("text")
+                .attr("dy", "1.5em")
+                .attr("x", 0)
+                .style("text-anchor", "middle")
+                .style("font-size", "11px")
+                .style("fill", "#e74c3c")
+                .style("font-weight", "700")
+                .text(d => d.data.probability + "%");
+            
+            // Функция для подсветки путей
+            function highlightPaths() {
+                // Обновляем цвета узлов
+                d3.selectAll(".node circle")
+                    .style("fill", d => {
+                        const nodeName = d.data.name;
+                        
+                        // Проверяем, является ли узел фиксированным
+                        if (selectedNode && selectedNode.data.name === nodeName) {
+                            return "#9b59b6"; // Фиолетовый для фиксированного узла
+                        }
+                        
+                        // Проверяем, находится ли узел на пути при наведении
+                        if (hoveredNode) {
+                            const hoveredPath = getPathToNode(hoveredNode);
+                            if (hoveredPath.includes(nodeName)) {
+                                return "#3498db"; // Синий для узла на пути при наведении
+                            }
+                        }
+                        
+                        // Проверяем, находится ли узел на наиболее вероятном пути
+                        if (mostProbableNodeNames.includes(nodeName)) {
+                            return "#2ecc71"; // Зеленый для наиболее вероятного пути
+                        }
+                        
+                        return "#ecf0f1"; // Светло-серый по умолчанию
+                    })
+                    .style("stroke", d => {
+                        const nodeName = d.data.name;
+                        
+                        if (selectedNode && selectedNode.data.name === nodeName) {
+                            return "#8e44ad"; // Темно-фиолетовый обводка
+                        }
+                        
+                        if (hoveredNode) {
+                            const hoveredPath = getPathToNode(hoveredNode);
+                            if (hoveredPath.includes(nodeName)) {
+                                return "#2980b9"; // Темно-синий обводка
+                            }
+                        }
+                        
+                        if (mostProbableNodeNames.includes(nodeName)) {
+                            return "#27ae60"; // Темно-зеленый обводка
+                        }
+                        
+                        return "#bdc3c7"; // Серый обводка по умолчанию
+                    });
+                
+                // Обновляем цвета линий
+                d3.selectAll(".link")
+                    .style("stroke", d => {
+                        const sourceName = d.source.data.name;
+                        const targetName = d.target.data.name;
+                        
+                        // Проверяем, находится ли текущее ребро на фиксированном пути
+                        if (selectedNode) {
+                            const selectedPath = getPathToNode(selectedNode);
+                            const sourceIndex = selectedPath.indexOf(sourceName);
+                            const targetIndex = selectedPath.indexOf(targetName);
+                            
+                            // Если оба узла на фиксированном пути и следуют друг за другом
+                            if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                                return "#9b59b6"; // Фиолетовый для фиксированного пути
+                            }
+                        }
+                        
+                        // Проверяем, находится ли текущее ребро на пути при наведении
+                        if (hoveredNode) {
+                            const hoveredPath = getPathToNode(hoveredNode);
+                            const sourceIndex = hoveredPath.indexOf(sourceName);
+                            const targetIndex = hoveredPath.indexOf(targetName);
+                            
+                            // Если оба узла на пути при наведении и следуют друг за другом
+                            if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                                return "#3498db"; // Синий для пути при наведении
+                            }
+                        }
+                        
+                        // Проверяем, находится ли текущее ребро на наиболее вероятном пути
+                        const sourceIndex = mostProbableNodeNames.indexOf(sourceName);
+                        const targetIndex = mostProbableNodeNames.indexOf(targetName);
+                        
+                        // Если оба узла на наиболее вероятном пути и следуют друг за другом
+                        if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                            return "#2ecc71"; // Зеленый для наиболее вероятного пути
+                        }
+                        
+                        return "#bdc3c7"; // Серый по умолчанию
+                    })
+                    .style("stroke-width", d => {
+                        const sourceName = d.source.data.name;
+                        const targetName = d.target.data.name;
+                        
+                        // Утолщаем линии на выделенных путях
+                        if (selectedNode) {
+                            const selectedPath = getPathToNode(selectedNode);
+                            const sourceIndex = selectedPath.indexOf(sourceName);
+                            const targetIndex = selectedPath.indexOf(targetName);
+                            
+                            if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                                return 3;
+                            }
+                        }
+                        
+                        if (hoveredNode) {
+                            const hoveredPath = getPathToNode(hoveredNode);
+                            const sourceIndex = hoveredPath.indexOf(sourceName);
+                            const targetIndex = hoveredPath.indexOf(targetName);
+                            
+                            if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                                return 3;
+                            }
+                        }
+                        
+                        const sourceIndex = mostProbableNodeNames.indexOf(sourceName);
+                        const targetIndex = mostProbableNodeNames.indexOf(targetName);
+                        
+                        if (sourceIndex !== -1 && targetIndex !== -1 && targetIndex === sourceIndex + 1) {
+                            return 3;
+                        }
+                        
+                        return 2;
+                    });
+            }
+            
+            // Функция для отображения информации об узле
+            function showNodeInfo(event, node) {
+                const infoPanel = document.getElementById('node-info');
+                const title = document.getElementById('info-title');
+                const description = document.getElementById('info-description');
+                const probability = document.getElementById('info-probability');
+                const path = document.getElementById('info-path');
+                
+                // Находим путь от корня до узла
+                const pathToNode = getPathToNode(node);
+                
+                // Заполняем информацию
+                title.textContent = node.data.name;
+                description.textContent = node.data.description || "Описание отсутствует";
+                probability.textContent = node.data.probability + "%";
+                
+                // Отображаем путь
+                let pathHTML = "";
+                for (let i = 0; i < pathToNode.length; i++) {
+                    pathHTML += `<div>${pathToNode[i]}</div>`;
+                }
+                path.innerHTML = pathHTML;
+                
+                // Показываем панель и позиционируем ее
+                infoPanel.style.display = 'block';
+                positionTooltip(event, infoPanel);
+            }
+            
+            // Функция для скрытия информации об узле
+            function hideNodeInfo() {
+                document.getElementById('node-info').style.display = 'none';
+            }
+            
+            // Функция для обновления фразы
+            function updatePhrase() {
+                const phraseElement = document.getElementById('phrase-text');
+                const exampleElement = document.getElementById('phrase-example');
+                
+                if (selectedNode) {
+                    const path = getPathToNode(selectedNode);
+                    const phrase = buildPhraseFromPath(path);
+                    phraseElement.textContent = phrase;
+                    
+                    // Добавляем пример использования
+                    let example = "";
+                    if (path.includes("постановил") && path.includes("взыскать")) {
+                        example = "Пример: Суд постановил взыскать задолженность в пользу истца.";
+                    } else if (path.includes("постановил") && path.includes("признать")) {
+                        example = "Пример: Суд постановил признать сделку недействительной.";
+                    } else if (path.includes("отменил") && path.includes("решение")) {
+                        example = "Пример: Апелляционный суд отменил решение нижестоящего суда.";
+                    } else if (path.includes("удовлетворил") && path.includes("иск")) {
+                        example = "Пример: Суд удовлетворил иск о взыскании убытков.";
+                    } else {
+                        example = "Сформирована юридическая фраза на основе выбранных элементов.";
+                    }
+                    
+                    exampleElement.textContent = example;
+                } else {
+                    phraseElement.textContent = "Выберите элементы дерева для формирования фразы";
+                    exampleElement.textContent = "";
+                }
+            }
+            
+            // Инициализируем выделение
+            highlightPaths();
+            updatePhrase();
+        }
+        
+        // Обработчик для кнопки сброса
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            // Сбрасываем фиксированный выбор
+            selectedNode = null;
+            
+            // Перестраиваем дерево
+            buildTree();
+            
+            // Скрываем информацию об узле
+            document.getElementById('node-info').style.display = 'none';
+            
+            // Обновляем фразу
+            updatePhrase();
+        });
+        
+        // Обработчик изменения размера окна
+        window.addEventListener('resize', function() {
+            buildTree();
+        });
+        
+        // Обработчик клика по документу для сброса выделения по ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                selectedNode = null;
+                buildTree();
+                document.getElementById('node-info').style.display = 'none';
+                updatePhrase();
+            }
+        });
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            buildTree();
+            
+            // Показываем информацию о корневом узле при загрузке
+            const rootInfo = {
+                data: treeData,
+                parent: null
+            };
+            
+            // Создаем искусственное событие для позиционирования
+            const fakeEvent = {
+                clientX: window.innerWidth / 2,
+                clientY: 100
+            };
+            
+            // Не показываем подсказку при загрузке, только фразу
+            updatePhrase();
+        });
+    </script>
+</body>
+</html>
