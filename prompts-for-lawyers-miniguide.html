@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI в юридической практике: От хаоса к методичности</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com/3.3.0"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .sidebar-open {
+            transform: translateX(0) !important;
+        }
+        .overlay-visible {
+            display: block !important;
+        }
+        .active-scenario {
+            background-color: #1e293b !important;
+            color: white !important;
+        }
+        .active-scenario i {
+            color: #60a5fa !important;
+        }
+        .methodical-active {
+            background-color: white !important;
+            color: #059669 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .random-active {
+            background-color: white !important;
+            color: #dc2626 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+        }
+        .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-success {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        .badge-blue {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        .chat-bubble {
+            position: relative;
+            max-width: 90%;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            padding-right: 60px; /* Отступ для кнопки копирования */
+        }
+        .user-bubble-bad {
+            background-color: #dc2626;
+            color: white;
+            border: 1px solid #b91c1c;
+        }
+        .user-bubble-good {
+            background-color: #059669;
+            color: white;
+            border: 1px solid #047857;
+        }
+        .ai-bubble {
+            background-color: white;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .nav-active {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 600 !important;
+        }
+        .nav-active i {
+            color: #0284c7 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen overflow-hidden bg-slate-50 text-slate-800">
+        <!-- Mobile Header -->
+        <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-50 shadow-sm">
+            <div class="flex items-center gap-2 font-semibold text-slate-800">
+                <i data-lucide="scale" class="text-blue-600" style="width: 24px; height: 24px;"></i>
+                <span class="text-sm">AI Legal Copilot</span>
+            </div>
+            <button id="mobile-menu-button" class="p-2 text-slate-600">
+                <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-80 bg-white border-r border-slate-200 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static flex flex-col shadow-sm">
+            <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-100">
+                <i data-lucide="brain-circuit" class="text-blue-600" style="width:28px; height:28px;"></i>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight">AI Legal Copilot</h1>
+                    <p class="text-xs text-slate-500">Методичное использование LLM в юриспруденции</p>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 scrollbar-hide">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-2">Основные сценарии</div>
+                <div id="scenario-list">
+                    <!-- Сценарии будут добавлены с помощью JavaScript -->
+                </div>
+                
+                <div class="mt-8 pt-4 border-t border-slate-100">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-2">Ресурсы</div>
+                    <button id="methodology-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-left mb-1 hover:bg-slate-100 text-slate-700">
+                        <i data-lucide="book-open" style="width:20px; height:20px;"></i>
+                        <div class="flex-1 overflow-hidden">
+                            <div class="font-medium text-sm truncate">Методология</div>
+                        </div>
+                    </button>
+                    <button id="safety-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-left mb-1 hover:bg-slate-100 text-slate-700">
+                        <i data-lucide="shield-alert" style="width:20px; height:20px;"></i>
+                        <div class="flex-1 overflow-hidden">
+                            <div class="font-medium text-sm truncate">Безопасность</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 bg-slate-50">
+                <div class="text-[10px] text-slate-400 leading-tight">
+                    © 2025 СПбГУ. Семинар "Технологии ИИ в юридической деятельности"<br>
+                    <span class="text-[9px]">AI ≠ юрист. Это второй пилот.</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full relative pt-16 md:pt-0">
+            <!-- Header -->
+            <header id="scenario-header" class="bg-white px-6 py-5 border-b border-slate-200 shadow-sm z-10">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h2 id="scenario-title" class="text-2xl font-bold text-slate-800"></h2>
+                            <span id="scenario-number" class="badge badge-success"></span>
+                        </div>
+                        <p id="scenario-description" class="text-slate-500 text-sm mb-2"></p>
+                        <div id="goal-section" class="mt-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="target" class="text-blue-500" style="width: 14px; height: 14px;"></i>
+                                <h3 class="font-medium text-blue-700 text-sm">Цель сценария:</h3>
+                            </div>
+                            <p id="goal-text" class="text-blue-600 text-sm ml-6 mt-1"></p>
+                        </div>
+                    </div>
+
+                    <!-- Method Switcher -->
+                    <div class="flex items-center bg-slate-100 p-1 rounded-lg self-start md:self-center shrink-0">
+                        <button id="random-method" class="random-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2">
+                            <i data-lucide="x-circle" style="width:16px; height:16px;"></i>
+                            Хаотичный
+                        </button>
+                        <button id="methodical-method" class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 text-slate-500 hover:text-slate-700">
+                            <i data-lucide="check-circle-2" style="width:16px; height:16px;"></i>
+                            Методичный
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Methodology/Safety Content (hidden by default) -->
+            <div id="methodology-content" class="hidden flex-1 overflow-y-auto p-6">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Hero Section -->
+                    <div class="section-card bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="brain-circuit" class="text-blue-600 mt-1" style="width: 32px; height: 32px;"></i>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800 mb-3">AI в юридической практике: Методология</h2>
+                                <p class="text-slate-600 mb-4">
+                                    Использование публичных LLM (ChatGPT, Claude, Gemini) в юридической практике — это не про замену юриста, а про создание мощного <span class="font-semibold text-blue-600">«второго пилота» (copilot)</span>.
+                                </p>
+                                <div class="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
+                                    <p class="text-blue-800 font-medium">
+                                        <i data-lucide="lightbulb" class="inline mr-2" style="width: 16px; height: 16px;"></i>
+                                        Главный принцип: <span class="font-bold">AI — это стажер с энциклопедическими знаниями, но без практического опыта и со склонностью к фантазиям.</span> Ему нужны четкие инструкции, контекст и обязательная проверка результата.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Table -->
+                    <div class="section-card">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="table" style="width: 20px; height: 20px;"></i>
+                            Методичность vs. Хаос: Сравнительная таблица
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead>
+                                    <tr class="bg-slate-50">
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Критерий</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-red-600 uppercase tracking-wider">Хаотичное использование</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-emerald-600 uppercase tracking-wider">Методичное использование</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Контекст</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Отсутствует («Напиши иск»)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Задан детально (Роль, Сторона, Цель, Факты)</td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Обезличивание</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Загрузка реальных ФИО и сумм (риск утечки!)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Замена данных на [Клиент], [Сумма], [Дата]</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Проверка</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Слепое копирование (Copy-Paste)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Верификация фактов и логики (Human-in-the-loop)</td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Результат</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Текст низкого качества, требующий переделки</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Готовая «рыба» документа на 80% готовности</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Skills Table -->
+                    <div class="section-card">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="zap" style="width: 20px; height: 20px;"></i>
+                            Расширенные сценарии: Какие навыки усиливает AI
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead>
+                                    <tr class="bg-slate-50">
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Сценарий</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Усиливаемая функция</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Ключевая ценность</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Хронология событий</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Структурное мышление, внимательность</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600"><span class="font-medium">Скорость.</span> Обработка массивов данных</td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Чек-листы (Compliance)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Методическое мышление, перевод в практику</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600"><span class="font-medium">Юзабилити.</span> Право становится понятным продуктом</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Симуляция переговоров</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Коммуникативные навыки (Soft Skills)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600"><span class="font-medium">Опыт.</span> Тренировка без риска провала</td>
+                                    </tr>
+                                    <tr class="bg-slate-50/50">
+                                        <td class="px-4 py-3 text-sm font-medium text-slate-700">Маркетинг (LMM)</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600">Креативность, копирайтинг</td>
+                                        <td class="px-4 py-3 text-sm text-slate-600"><span class="font-medium">Видимость.</span> Развитие личного бренда</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Principles -->
+                    <div class="section-card">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="target" style="width: 20px; height: 20px;"></i>
+                            Основные принципы работы
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i data-lucide="key" class="text-blue-600" style="width: 18px; height: 18px;"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">1. Контекст — это всё</h4>
+                                    <p class="text-slate-600 text-sm">Всегда указывайте роль AI, вашу роль, цель и конкретные факты. Без контекста AI будет гадать.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="bg-emerald-100 p-2 rounded-lg">
+                                    <i data-lucide="shield" class="text-emerald-600" style="width: 18px; height: 18px;"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">2. Человек в цикле (Human-in-the-loop)</h4>
+                                    <p class="text-slate-600 text-sm">AI генерирует черновик, юрист проверяет, редактирует и утверждает. Никогда не копируйте вслепую.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg">
+                                    <i data-lucide="refresh-cw" class="text-amber-600" style="width: 18px; height: 18px;"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">3. Итеративный процесс</h4>
+                                    <p class="text-slate-600 text-sm">Лучший результат получается через диалог: запрос → ответ → уточнение → финальная версия.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Content (hidden by default) -->
+            <div id="safety-content" class="hidden flex-1 overflow-y-auto p-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="section-card bg-gradient-to-br from-red-50 to-orange-50 border-red-100">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="shield-alert" class="text-red-600 mt-1" style="width: 32px; height: 32px;"></i>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800 mb-3">Главное предостережение: Безопасность</h2>
+                                <div class="bg-red-100 border border-red-200 rounded-lg p-4 mb-4">
+                                    <p class="text-red-800 font-bold text-lg mb-2">
+                                        ⚠️ НИКОГДА не используйте ChatGPT/Gemini для поиска судебной практики без специальных плагинов!
+                                    </p>
+                                    <p class="text-red-700">
+                                        Модели склонны к «галлюцинациям» — они могут придумать номер дела, фамилию судьи и текст решения, которые выглядят идеально правдоподобно, но не существуют в реальности.
+                                    </p>
+                                </div>
+                                <p class="text-slate-600 mb-3">
+                                    Вспомните кейс <a href="https://zakon.ru/blog/2023/09/13/delo_ob_iskusstvennom_precedente" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold underline">Mata v. Avianca</a>, где адвокаты принесли в суд выдуманные ChatGPT прецеденты и были оштрафованы.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="check-circle-2" style="width: 20px; height: 20px;"></i>
+                            Правильное разделение труда: AI vs. Человек
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="thumbs-up" class="text-emerald-600" style="width: 20px; height: 20px;"></i>
+                                    <h4 class="font-bold text-emerald-800">Используйте AI для обработки текста</h4>
+                                </div>
+                                <ul class="space-y-2 text-sm text-emerald-700">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check" class="text-emerald-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Анализ и вычитка документов</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check" class="text-emerald-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Суммаризация и структурирование</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check" class="text-emerald-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Перевод на понятный язык</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check" class="text-emerald-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Генерация черновиков</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="check" class="text-emerald-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Стилистическая правка</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-red-50 border border-red-100 rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i data-lucide="thumbs-down" class="text-red-600" style="width: 20px; height: 20px;"></i>
+                                    <h4 class="font-bold text-red-800">НЕ используйте AI для поиска фактов</h4>
+                                </div>
+                                <ul class="space-y-2 text-sm text-red-700">
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="x" class="text-red-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Поиск судебной практики</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="x" class="text-red-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Проверка правовых норм</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="x" class="text-red-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Цитирование законов</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="x" class="text-red-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Фактическая проверка данных</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <i data-lucide="x" class="text-red-500 mt-0.5" style="width: 16px; height: 16px;"></i>
+                                        <span>Определение подсудности</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
+                            Правила безопасности данных
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                                <i data-lucide="user-check" class="text-blue-500 mt-1" style="width: 18px; height: 18px;"></i>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">Обязательное обезличивание</h4>
+                                    <p class="text-slate-600 text-sm">Заменяйте все персональные данные, названия компаний, суммы и даты на [Клиент], [Компания], [Сумма], [Дата].</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                                <i data-lucide="eye-off" class="text-blue-500 mt-1" style="width: 18px; height: 18px;"></i>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">Конфиденциальность</h4>
+                                    <p class="text-slate-600 text-sm">Не загружайте документы с грифом "Коммерческая тайна", "Для служебного пользования" или содержащие гостайну.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                                <i data-lucide="clipboard-check" class="text-blue-500 mt-1" style="width: 18px; height: 18px;"></i>
+                                <div>
+                                    <h4 class="font-semibold text-slate-700 mb-1">Двойная проверка</h4>
+                                    <p class="text-slate-600 text-sm">Всегда проверяйте результат у коллеги или руководителя, особенно при работе с важными документами.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Area (default view) -->
+            <div id="chat-area" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Info Banner -->
+                    <div id="info-banner" class="mb-8 p-4 rounded-lg border flex items-start gap-3 text-sm bg-red-50 border-red-100 text-red-800">
+                        <div class="shrink-0 mt-0.5">
+                            <i id="banner-icon" data-lucide="x-circle" style="width:18px; height:18px;"></i>
+                        </div>
+                        <div>
+                            <span id="info-title" class="font-bold block mb-1">Хаотичный подход</span>
+                            <span id="info-description">Абстрактный или слишком краткий запрос. ИИ вынужден гадать, что вы имели в виду, и часто отвечает общими фразами.</span>
+                        </div>
+                    </div>
+
+                    <!-- Messages -->
+                    <div id="chat-container">
+                        <div class="flex flex-col mb-6 items-end fade-in">
+                            <div class="text-xs text-slate-400 mb-1 font-medium uppercase tracking-wider ml-1 mr-1">
+                                Ваш запрос (Промпт)
+                            </div>
+                            <div id="user-prompt" class="chat-bubble user-bubble-bad">
+                                <!-- Prompt will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center my-4">
+                            <div class="h-8 w-[1px] bg-slate-200"></div>
+                        </div>
+
+                        <div class="flex flex-col mb-6 items-start fade-in">
+                            <div class="text-xs text-slate-400 mb-1 font-medium uppercase tracking-wider ml-1 mr-1">
+                                Ответ ИИ
+                            </div>
+                            <div id="ai-response" class="chat-bubble ai-bubble">
+                                <!-- Response will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Benefits & Risks (только для методичного подхода) -->
+                    <div id="benefits-risks-section" class="hidden grid md:grid-cols-2 gap-6 mt-8">
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="thumbs-up" class="text-emerald-600" style="width: 20px; height: 20px;"></i>
+                                <h3 class="font-bold text-emerald-800">Польза методичного подхода</h3>
+                            </div>
+                            <p id="benefit-text" class="text-emerald-700 text-sm"></p>
+                        </div>
+                        
+                        <div class="bg-red-50 border border-red-100 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="alert-triangle" class="text-red-600" style="width: 20px; height: 20px;"></i>
+                                <h3 class="font-bold text-red-800">Вред / Риски</h3>
+                            </div>
+                            <p id="risk-text" class="text-red-700 text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Overlay for mobile sidebar -->
+        <div id="overlay" class="hidden fixed inset-0 bg-black/20 z-30 md:hidden"></div>
+    </div>
+
+    <script>
+        // Данные сценариев (обновленные с глубоким содержанием)
+        const scenarios = [
+            {
+                id: 1,
+                title: "Первичный анализ договора",
+                shortTitle: "Анализ рисков",
+                icon: "file-text",
+                description: "Быстрый поиск «красных флагов» в договоре поставки от контрагента",
+                goal: "За 5-10 минут получить список рискованных условий вместо часов ручной вычитки.",
+                benefit: "Экономия 30–60 минут на первичной вычитке. Вы сразу видите, где «болит», и можете сфокусироваться на переговорах по ключевым пунктам.",
+                risk: "Если не проверить, ИИ может пропустить пункт, написанный сложным юридическим языком, или выдумать норму права. Всегда сверяйте с оригиналом договора.",
+                bad: {
+                    prompt: "Посмотри этот договор, он нормальный?",
+                    response: "Договор выглядит стандартно. В нем содержатся разделы о предмете, сроках и ответственности. Я не вижу явных орфографических ошибок. В целом, это типовой договор поставки, который соответствует общим требованиям законодательства."
+                },
+                good: {
+                    prompt: "Роль: Ты — старший юрист in-house департамента крупной торговой компании (Покупатель).\n\nЗадача: Проанализируй загруженный текст договора поставки.\n\nФокус: Найди 5 самых рискованных условий для Покупателя. Обрати особое внимание на:\n1. Условия одностороннего расторжения со стороны Поставщика.\n2. Штрафы и неустойки (их соразмерность).\n3. Подсудность (нам нужен Арбитражный суд г. Москвы).\n\nФормат: Таблица (Пункт договора — Суть риска — Рекомендация по исправлению).",
+                    response: "1. П. 5.2 — Поставщик может расторгнуть договор без предварительного уведомления в случае задержки оплаты на 3 дня. (Высокий риск) → Исправить: увеличить срок до 15 дней с обязательным письменным уведомлением.\n\n2. П. 8.1 — Пеня 1% в день от цены договора (несоразмерна, может быть уменьшена судом по ст. 333 ГК РФ) → Исправить: снизить до 0,1% в день.\n\n3. П. 12 — Подсудность по месту нахождения Истца (для вас неудобно) → Исправить: «по месту нахождения Покупателя» или «Арбитражный суд г. Москвы».\n\n4. П. 7.4 — Гарантийный срок 30 дней с момента поставки (слишком короткий для оборудования) → Исправить: минимум 12 месяцев.\n\n5. П. 9.3 — Право Поставщика в одностороннем порядке менять сроки поставки → Исправить: только по согласованию сторон с уменьшением цены при задержке."
+                }
+            },
+            {
+                id: 2,
+                title: "Перевод с «юридического» на «человеческий»",
+                shortTitle: "Клиентская коммуникация",
+                icon: "message-square",
+                description: "Объяснить CEO суть сложного решения простым языком",
+                goal: "Дать клиенту или руководству суть проблемы и решение, а не юридическую проблему.",
+                benefit: "Резкое улучшение клиентского сервиса. Клиент получает решение, а не проблему. Упрощает принятие решений неюристами.",
+                risk: "Риск искажения смысла при упрощении. Всегда сверяйте упрощенную версию с оригиналом на предмет потери юридических нюансов.",
+                bad: {
+                    prompt: "Сократи этот текст.",
+                    response: "В соответствии с вышеизложенным и руководствуясь статьями 309, 310, 450 ГК РФ, мы полагаем целесообразным инициировать процедуру расторжения договора № 123 от 15.01.2024 в связи с существенным нарушением условий..."
+                },
+                good: {
+                    prompt: "Контекст: Я отправляю письмо занятому CEO, который не разбирается в праве.\n\nЗадача: Перепиши этот юридический меморандум (текст ниже).\n\nТребования:\n1. Стиль: деловой, но простой (Plain English/Russian).\n2. Структура: Сначала «Главный вывод» (одной строкой), затем «Риски» (в деньгах), затем «Что нам нужно сделать» (конкретные шаги).\n3. Убери все ссылки на статьи законов, оставь только суть.\n\nТон: Спокойный, уверенный.",
+                    response: "ГЛАВНЫЙ ВЫВОД: Мы можем расторгнуть договор с Поставщиком, но это будет стоить денег и времени.\n\nРИСКИ:\n• Если не действовать, мы теряем 2 млн руб. в месяц из-за срыва поставок.\n• Расторжение через суд займет 4-6 месяцев и обойдется в ~500 тыс. руб. судебных издержек.\n• Альтернативный поставщик дороже на 15%.\n\nЧТО ДЕЛАТЬ:\n1. До пятницы — отправить Поставщику официальную претензию с требованием исправить нарушения за 10 дней.\n2. Параллельно — начать поиск альтернативного поставщика.\n3. Если через 10 дней ситуация не исправится — подаем иск в суд.\n\nРекомендую выбрать путь переговоров: снижение цены на 20% компенсирует наши потери."
+                }
+            },
+            {
+                id: 3,
+                title: "«Адвокат дьявола»",
+                shortTitle: "Судебная стратегия",
+                icon: "scale",
+                description: "Предугадать аргументы оппонента перед заседанием",
+                goal: "Найти слабые места в своей позиции до того, как это сделает противник.",
+                benefit: "ИИ помогает преодолеть «туннельное зрение» (confirmation bias), когда юрист слишком верит в свою позицию. Позволяет заранее подготовить контраргументы.",
+                risk: "Модель может предложить слишком агрессивные или неэтичные стратегии. Фильтруйте предложения через призму профессиональной этики.",
+                bad: {
+                    prompt: "Какие аргументы могут быть против нас в суде по делу о взыскании долга?",
+                    response: "Оппонент может сказать, что услуги не были оказаны или что истек срок исковой давности. Также он может оспаривать доказательства."
+                },
+                good: {
+                    prompt: "Роль: Ты — агрессивный и опытный судебный юрист, представляющий интересы Ответчика.\n\nВводные: Мы (Истец) требуем оплаты 5 млн руб. за услуги по разработке ПО. Акты не подписаны, но переписка в Telegram подтверждает сдачу работ.\n\nЗадача:\n1. Разгроми нашу позицию. Найди самые слабые места в доказательной базе.\n2. Предложи 3 неочевидных процессуальных уловки, чтобы затянуть процесс.\n3. Сформулируй контраргументы на довод о том, что «переписка в Telegram является надлежащим доказательством».\n\nФормат: Структурированный план защиты.",
+                    response: "ПЛАН ЗАЩИТЫ:\n\nСЛАБЫЕ МЕСТА ИСТЦА:\n1. Нет подписанных актов — основной договор требует письменного акта сдачи-приемки.\n2. Telegram-переписка с ником @dev_team — нельзя доказать, что это именно наш сотрудник.\n3. Истец не запрашивал подписание актов — можно заявить о недобросовестности.\n\nПРОЦЕССУАЛЬНЫЕ УЛОВКИ:\n1. Ходатайство о проведении экспертизы переписки на предмет модификации (займет 2-3 месяца).\n2. Заявление о фальсификации доказательств + встречный иск о взыскании убытков за простой.\n3. Ходатайство о привлечении третьего лица — «заказчика конечного продукта».\n\nКОНТРАРГУМЕНТЫ ПО TELEGRAM:\n«Скриншоты не заверены нотариально, невозможно установить дату создания файлов, метаданные отсутствуют. Согласно п. 2 ст. 71 АПК РФ, электронные документы должны быть подписаны ЭЦП. Telegram-сообщения таковой не имеют.»"
+                }
+            },
+            {
+                id: 4,
+                title: "Драфтинг сложной оговорки",
+                shortTitle: "Legal Design",
+                icon: "pen-tool",
+                description: "Создать уникальное условие о форс-мажоре для сделки с Китаем",
+                goal: "Получить «портновское» условие, а не шаблонную «воду».",
+                benefit: "Создание tailor-made условия за минуты вместо часов поиска в базе шаблонов. Учет специфики сделки (санкции, пандемии, закрытие границ).",
+                risk: "ИИ может предложить условия, противоречащие императивным нормам права. Всегда проверяйте соответствие законодательству.",
+                bad: {
+                    prompt: "Напиши пункт о форс-мажоре.",
+                    response: "Стороны освобождаются от ответственности при наступлении обстоятельств непреодолимой силы (пожар, наводнение, землетрясение, война). Сторона, для которой создалась невозможность исполнения обязательств, обязана уведомить другую сторону в разумный срок."
+                },
+                good: {
+                    prompt: "Шаг 1: Напиши пункт о форс-мажоре для договора поставки оборудования из Китая.\n\nТребования:\n1. Включи в список обстоятельств: эпидемии, закрытие границ, валютные ограничения и санкции третьих стран.\n2. Сделай акцент на обязанности немедленного уведомления через мессенджеры (WeChat/Telegram) и email.\n3. Предусмотри возможность отсрочки исполнения на срок форс-мажора + 30 дней.\n\nШаг 2 (после получения черновика): Сделай этот пункт более про-поставщиком. Увеличь срок на уведомление до 10 дней и добавь условие, что отсутствие справки ТПП не лишает права ссылаться на форс-мажор.",
+                    response: "9. ФОРС-МАЖОР\n\n9.1. Стороны освобождаются от ответственности за частичное или полное неисполнение обязательств, если оно вызвано обстоятельствами непреодолимой силы (форс-мажор), которые стороны не могли предвидеть или предотвратить.\n\n9.2. К обстоятельствам непреодолимой силы Стороны прямо относят: эпидемии и пандемии, признанные ВОЗ; закрытие государственных границ или введение ограничений на перемещение товаров; валютные ограничения, препятствующие осуществлению расчетов; санкционные ограничения, введенные третьими странами в отношении Китайской Народной Республики или Российской Федерации.\n\n9.3. Сторона, для которой создалась невозможность исполнения обязательств, обязана уведомить другую Сторону любым доступным способом (WeChat, Telegram, email) в течение 10 (десяти) календарных дней с момента наступления таких обстоятельств.\n\n9.4. Отсутствие справки Торгово-промышленной палаты не является основанием для отказа в признании форс-мажорных обстоятельств при наличии иных доказательств.\n\n9.5. Срок исполнения обязательств отодвигается соразмерно времени действия форс-мажорных обстоятельств плюс 30 (тридцать) дней для восстановления нормальной деятельности."
+                }
+            },
+            {
+                id: 5,
+                title: "Хронология событий",
+                shortTitle: "Поддержка судебных споров",
+                icon: "clock",
+                description: "Превратить 50 страниц переписки в четкий таймлайн",
+                goal: "Создать наглядную хронологию для суда или служебного расследования.",
+                benefit: "Превращение десятков страниц хаотичного текста в таблицу на 2-3 страницы, которую можно сразу использовать как приложение к исковому заявлению. Экономия 2-3 часов ручной работы.",
+                risk: "ИИ может неправильно интерпретировать контекст или пропустить важные события. Всегда проверяйте ключевые даты и события.",
+                bad: {
+                    prompt: "Что произошло в этих письмах?",
+                    response: "Сотрудники обсуждали проект, потом начались споры о сроках, в итоге заказчик остался недоволен качеством работы."
+                },
+                good: {
+                    prompt: "Контекст: Готовимся к трудовому спору. Есть выгрузка переписки сотрудника и HR за последние 3 месяца.\n\nЗадача: Создай хронологическую таблицу событий на основе текста ниже.\n\nФормат таблицы:\n1. Дата и время (если есть)\n2. От кого / Кому\n3. Ключевое действие (одним предложением)\n4. Цитата, подтверждающая факт (если есть важная фраза)\n\nТребования:\n- Выдели события, связанные с отказом выполнять рабочие задачи\n- Отметь нарушения со стороны работодателя (если есть)\n- Укажи, где сотрудник признает свои ошибки\n\nТекст для анализа: [Вставить массив переписки]",
+                    response: "| Дата | От кого/Кому | Ключевое действие | Цитата/Примечание |\n|------|--------------|-------------------|-------------------|\n| 15.01 10:30 | HR → Сотрудник | Направлено задание на разработку отчета | «Прошу подготовить отчет по продажам до 18.01» |\n| 17.01 14:15 | Сотрудник → HR | Отказ выполнять задание | «Не буду делать этот отчет, это не входит в мои обязанности» |\n| 18.01 09:00 | HR → Сотрудник | Письменное требование выполнить задание | «Настоятельно требуем выполнить поручение в течение дня» |\n| 18.01 16:45 | Сотрудник → HR | Повторный отказ | «Я уже сказал — не буду. Напишите замечание» |\n| 19.01 11:20 | HR → Директор | Сообщение о нарушении | «Сотрудник систематически отказывается от работы» |"
+                }
+            },
+            {
+                id: 6,
+                title: "Превращение закона в бизнес-процесс",
+                shortTitle: "Compliance Ops",
+                icon: "list-checks",
+                description: "Создать чек-лист для маркетинга из текста закона",
+                goal: "Дать бизнесу готовый алгоритм действий, а не юридическую теорию.",
+                benefit: "Юрист выступает не как «блокер», а как бизнес-партнер, дающий готовый инструмент. Резко повышается исполнение compliance-требований.",
+                risk: "Упрощение может привести к потере важных нюансов закона. Всегда оставляйте ссылку на оригинальный нормативный акт для проверки в сложных случаях.",
+                bad: {
+                    prompt: "Как соблюдать новый закон о рекламе?",
+                    response: "Реклама должна быть добросовестной и достоверной. Не допускается реклама запрещенных товаров. Рекламодатель обязан указывать свои данные."
+                },
+                good: {
+                    prompt: "Роль: Ты — юрист, сопровождающий отдел маркетинга digital-агентства.\n\nВводные: Вышел новый закон о маркировке рекламы (текст ниже).\n\nЗадача: Преобразуй этот юридический текст в пошаговый алгоритм (Checklist) для менеджера по рекламе.\n\nТребования:\n1. Используй повелительное наклонение («Сделай», «Проверь», «Убедись»)\n2. Если есть штраф — укажи его размер жирным шрифтом напротив пункта\n3. Разбей на этапы: «ДО публикации», «ВО ВРЕМЯ публикации», «ПОСЛЕ публикации (отчетность)»\n4. Добавь колонку «Ответственный»\n\nТекст закона: [Статья 12.3 нового ФЗ о рекламе...]",
+                    response: "✅ ЧЕК-ЛИСТ ДЛЯ МЕНЕДЖЕРА ПО РЕКЛАМЕ\n\nДО ПУБЛИКАЦИИ:\n1. Получи токен (erid) в ОРД — Ответственный: Менеджер\n2. Проверь, есть ли пометка «Реклама» на баннере — Ответственный: Дизайнер\n3. Укажи сведения о рекламодателе: название, ИНН, ОГРН — Ответственный: Менеджер\n   ⚠️ Штраф за отсутствие: до 500 000 руб.\n\nВО ВРЕМЯ ПУБЛИКАЦИИ:\n4. Размести erid в метаданных кампании — Ответственный: Таргетолог\n5. Убедись, что erid виден в инспекторе кода страницы — Ответственный: Верстальщик\n\nПОСЛЕ ПУБЛИКАЦИИ (отчетность):\n6. Сохрани скриншоты с erid в архиве кампании — Ответственный: Менеджер\n7. Подготовь отчет для клиента с указанием erid — Ответственный: Менеджер\n\nПРОВЕРКА: Каждую пятницу сверяй 3 случайные кампании по чек-листу!"
+                }
+            },
+            {
+                id: 7,
+                title: "Тренажер переговоров",
+                shortTitle: "Симуляция переговоров",
+                icon: "users",
+                description: "Отработать сложный диалог с арендодателем",
+                goal: "Подготовиться к реальным переговорам без риска провала сделки.",
+                benefit: "Безопасная среда для отработки возражений. Особенно полезно для Junior-юристов перед реальной встречей. Развивает коммуникативные навыки.",
+                risk: "ИИ может давать нереалистичные или слишком агрессивные ответы. Используйте симуляцию как тренировку, а не как готовый сценарий.",
+                bad: {
+                    prompt: "Напиши советы для переговоров по аренде.",
+                    response: "Будьте вежливы, используйте активное слушание, ищите компромисс win-win. Готовьтесь заранее, знайте свои BATNA."
+                },
+                good: {
+                    prompt: "Режим: Симуляция переговоров.\n\nТвоя роль: Ты — упрямый арендодатель торгового центра. Ты категорически не хочешь снижать аренду, ссылаясь на свои кредиты. Ты ведешь себя эмоционально и перебиваешь.\n\nМоя роль: Я — арендатор (кафе), у которого упала выручка на 40%. У меня есть рычаги: я плачу исправно 3 года, улучшил помещение на 2 млн руб., привлекаю трафик в центр.\n\nЗадача: Давай проведем диалог. Я говорю реплику, ты отвечаешь в стиле агрессивного арендодателя. После 5 реплик остановись и дай оценку моим аргументам: что было убедительно, а где я проявил слабость.\n\nНачинай ты первой репликой:",
+                    response: "Арендодатель (ИИ): «Я же сто раз говорил — никаких скидок! У меня кредит 50 миллионов, мне банк навстречу не идет! Платите по договору или съезжайте!»\n\n(После вашей реплики)...\n\nАНАЛИЗ ПОСЛЕ 5 РЕПЛИК:\nСильные стороны вашей позиции:\n1. История платежей — убедительный аргумент\n2. Улучшения помещения — создает моральное обязательство\n\nСлабые места:\n1. Слишком быстро пошли на уступку (сразу предложили 70%)\n2. Не использовали рычаг трафика — можно было сказать, что ваше кафе привлекает посетителей в центр\n3. Не предложили встречные условия (продление договора, реклама центра)"
+                }
+            },
+            {
+                id: 8,
+                title: "LMM: Личный бренд юриста",
+                shortTitle: "Маркетинг",
+                icon: "megaphone",
+                description: "Превратить сухой алёрт в пост для Telegram-канала",
+                goal: "Создать вовлекающий контент для соцсетей без часов мучений.",
+                benefit: "Регулярная генерация контента занимает 5 минут вместо 2 часов мучений над «чистым листом». Повышает видимость экспертизы и привлекает клиентов.",
+                risk: "ИИ может добавить излишнюю эмоциональность или допустить неточности при упрощении. Всегда проверяйте факты и сохраняйте экспертный тон.",
+                bad: {
+                    prompt: "Напиши пост про субсидиарную ответственность.",
+                    response: "Субсидиарная ответственность — это вид гражданско-правовой ответственности, при которой лицо несет дополнительную ответственность по обязательствам другого лица. Устанавливается в случаях, предусмотренных законом или договором."
+                },
+                good: {
+                    prompt: "Задача: Преврати этот сухой юридический алёрт о субсидиарной ответственности (текст ниже) в увлекательный пост для Telegram-канала для предпринимателей.\n\nЦелевая аудитория: Собственники малого и среднего бизнеса (40-55 лет).\n\nСтруктура поста:\n1. Кликбейтный заголовок (но без желтизны, сохрани экспертный тон)\n2. Проблема (\"Pain point\"): Почему они могут потерять деньги и личное имущество\n3. Решение: 3 простых шага, как обезопасить себя\n4. Call to Action (призыв записаться на консультацию)\n\nТон: Экспертный, но ироничный. Используй эмодзи умеренно (2-3 на весь пост).\n\nАлёрт: [С 1 сентября 2023 года... директора несут субсидиарную ответственность...]",
+                    response: "😰 Директор отвечает ВСЕМ своим имуществом?\n\nДа, если вовремя не подать на банкротство компании. Это называется «субсидиарка». \n\nПо новым правилам с 2023 года:\n• Квартира? Могут забрать.\n• Машина? Могут забрать.\n• Дача? Могут забрать.\n\nИ не важно, что бизнес прогорел из-за кризиса или недобросовестного партнера.\n\n✨ 3 шага, как защитить себя:\n\n1. Аудит долгов ДО того, как кредиторы постучатся в суд.\n2. Сбор документов, доказывающих вашу добросовестность.\n3. Своевременное обращение в суд с заявлением о банкротстве.\n\n❌ Ошибка, которая стоит квартиры: Ждать, пока «само рассосется». Не рассосется. Будет только хуже.\n\n👇 Запишитесь на аудит рисков субсидиарной ответственности. 1 час консультации может спасти ваше имущество.\n\n#юрист #субсидиарка #банкротство #бизнес"
+                }
+            }
+        ];
+
+        // Состояние приложения
+        let currentState = {
+            activeScenarioId: 1,
+            isMethodical: false,
+            isSidebarOpen: false,
+            copyButtonTimeout: null,
+            currentView: 'scenario' // 'scenario', 'methodology', 'safety'
+        };
+
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация иконок
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+            
+            // Заполнение списка сценариев
+            renderScenarioList();
+            
+            // Установка начального сценария
+            updateScenarioContent();
+            
+            // Настройка обработчиков событий
+            setupEventListeners();
+            
+            // Обновить навигационные кнопки
+            updateNavigationButtons();
+        });
+
+        // Обновление навигационных кнопок
+        function updateNavigationButtons() {
+            const methodologyBtn = document.getElementById('methodology-btn');
+            const safetyBtn = document.getElementById('safety-btn');
+            
+            // Сначала сбросим все стили
+            if (methodologyBtn) {
+                methodologyBtn.classList.remove('nav-active');
+                methodologyBtn.classList.add('hover:bg-slate-100', 'text-slate-700');
+            }
+            
+            if (safetyBtn) {
+                safetyBtn.classList.remove('nav-active');
+                safetyBtn.classList.add('hover:bg-slate-100', 'text-slate-700');
+            }
+            
+            // Затем установим активный стиль
+            if (currentState.currentView === 'methodology' && methodologyBtn) {
+                methodologyBtn.classList.add('nav-active');
+                methodologyBtn.classList.remove('hover:bg-slate-100', 'text-slate-700');
+            } else if (currentState.currentView === 'safety' && safetyBtn) {
+                safetyBtn.classList.add('nav-active');
+                safetyBtn.classList.remove('hover:bg-slate-100', 'text-slate-700');
+            }
+            
+            // Обновить иконки
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // Рендер списка сценариев в сайдбаре
+        function renderScenarioList() {
+            const scenarioList = document.getElementById('scenario-list');
+            if (!scenarioList) return;
+            
+            scenarioList.innerHTML = '';
+            
+            scenarios.forEach(scenario => {
+                const button = document.createElement('button');
+                button.className = `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-left mb-1 
+                    ${scenario.id === currentState.activeScenarioId && currentState.currentView === 'scenario' ? 'active-scenario' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'}`;
+                button.innerHTML = `
+                    <i data-lucide="${scenario.icon}" style="width:20px; height:20px;"></i>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="font-medium text-sm truncate">${scenario.shortTitle}</div>
+                    </div>
+                `;
+                
+                button.addEventListener('click', () => {
+                    selectScenario(scenario.id);
+                    switchView('scenario');
+                });
+                
+                scenarioList.appendChild(button);
+            });
+            
+            // Обновить иконки после добавления в DOM
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // Выбор сценария
+        function selectScenario(scenarioId) {
+            currentState.activeScenarioId = scenarioId;
+            currentState.isMethodical = false; // Сбросить к "хаотичному" подходу
+            
+            // Закрыть сайдбар на мобильных устройствах
+            if (window.innerWidth < 768) {
+                closeSidebar();
+            }
+            
+            // Обновить контент
+            updateScenarioContent();
+            
+            // Обновить состояние кнопок метода
+            updateMethodButtons();
+            
+            // Перерисовать список сценариев с новым активным элементом
+            renderScenarioList();
+        }
+
+        // Переключение между видами (сценарий/методология/безопасность)
+        function switchView(view) {
+            currentState.currentView = view;
+            
+            // Скрыть все контейнеры
+            document.getElementById('scenario-header').classList.add('hidden');
+            document.getElementById('chat-area').classList.add('hidden');
+            document.getElementById('methodology-content').classList.add('hidden');
+            document.getElementById('safety-content').classList.add('hidden');
+            
+            // Показать нужный контейнер
+            if (view === 'scenario') {
+                document.getElementById('scenario-header').classList.remove('hidden');
+                document.getElementById('chat-area').classList.remove('hidden');
+                updateScenarioContent();
+            } else if (view === 'methodology') {
+                document.getElementById('methodology-content').classList.remove('hidden');
+            } else if (view === 'safety') {
+                document.getElementById('safety-content').classList.remove('hidden');
+            }
+            
+            // Обновить активные кнопки в сайдбаре
+            updateSidebarButtons();
+            // Обновить навигационные кнопки
+            updateNavigationButtons();
+        }
+
+        // Обновление кнопок в сайдбаре
+        function updateSidebarButtons() {
+            // Сбросить все кнопки сценариев
+            const scenarioButtons = document.querySelectorAll('#scenario-list button');
+            scenarioButtons.forEach(btn => {
+                btn.classList.remove('active-scenario');
+                btn.classList.add('text-slate-400', 'hover:bg-slate-100', 'hover:text-slate-700');
+            });
+            
+            // Установить активный сценарий, если мы в режиме сценария
+            if (currentState.currentView === 'scenario') {
+                const activeBtn = document.querySelector(`#scenario-list button:nth-child(${currentState.activeScenarioId})`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active-scenario');
+                    activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-100', 'hover:text-slate-700');
+                }
+            }
+        }
+
+        // Обновление контента сценария
+        function updateScenarioContent() {
+            const scenario = scenarios.find(s => s.id === currentState.activeScenarioId);
+            if (!scenario) return;
+            
+            // Обновление заголовка
+            const scenarioTitle = document.getElementById('scenario-title');
+            const scenarioNumber = document.getElementById('scenario-number');
+            const scenarioDescription = document.getElementById('scenario-description');
+            const goalText = document.getElementById('goal-text');
+            const benefitText = document.getElementById('benefit-text');
+            const riskText = document.getElementById('risk-text');
+            
+            if (scenarioTitle) scenarioTitle.textContent = scenario.title;
+            if (scenarioNumber) {
+                scenarioNumber.textContent = `Сценарий ${scenario.id}`;
+                scenarioNumber.className = scenario.id <= 4 ? 'badge badge-success' : 'badge badge-blue';
+            }
+            if (scenarioDescription) scenarioDescription.textContent = scenario.description;
+            if (goalText) goalText.textContent = scenario.goal;
+            if (benefitText) benefitText.textContent = scenario.benefit;
+            if (riskText) riskText.textContent = scenario.risk;
+            
+            // Обновление чата
+            const userPrompt = document.getElementById('user-prompt');
+            const aiResponse = document.getElementById('ai-response');
+            
+            if (userPrompt && aiResponse) {
+                if (currentState.isMethodical) {
+                    userPrompt.textContent = scenario.good.prompt;
+                    aiResponse.textContent = scenario.good.response;
+                    userPrompt.className = 'chat-bubble user-bubble-good';
+                    
+                    // Обновление инфо-баннера
+                    const infoBanner = document.getElementById('info-banner');
+                    const infoTitle = document.getElementById('info-title');
+                    const infoDescription = document.getElementById('info-description');
+                    const bannerIcon = document.getElementById('banner-icon');
+                    
+                    if (infoBanner) {
+                        infoBanner.className = 'mb-8 p-4 rounded-lg border flex items-start gap-3 text-sm bg-emerald-50 border-emerald-100 text-emerald-800';
+                    }
+                    
+                    if (infoTitle) infoTitle.textContent = 'Методичный подход';
+                    if (infoDescription) infoDescription.textContent = 'Четкие инструкции, контекст и структура позволяют AI сфокусироваться и дать полезный, релевантный ответ.';
+                    
+                    if (bannerIcon) {
+                        bannerIcon.setAttribute('data-lucide', 'check-circle-2');
+                    }
+                    
+                    // Показать блоки пользы и рисков
+                    document.getElementById('benefits-risks-section').classList.remove('hidden');
+                    document.getElementById('benefits-risks-section').classList.add('grid');
+                } else {
+                    userPrompt.textContent = scenario.bad.prompt;
+                    aiResponse.textContent = scenario.bad.response;
+                    userPrompt.className = 'chat-bubble user-bubble-bad';
+                    
+                    // Обновление инфо-баннера
+                    const infoBanner = document.getElementById('info-banner');
+                    const infoTitle = document.getElementById('info-title');
+                    const infoDescription = document.getElementById('info-description');
+                    const bannerIcon = document.getElementById('banner-icon');
+                    
+                    if (infoBanner) {
+                        infoBanner.className = 'mb-8 p-4 rounded-lg border flex items-start gap-3 text-sm bg-red-50 border-red-100 text-red-800';
+                    }
+                    
+                    if (infoTitle) infoTitle.textContent = 'Хаотичный подход';
+                    if (infoDescription) infoDescription.textContent = 'Абстрактный или слишком краткий запрос. ИИ вынужден гадать, что вы имели в виду, и часто отвечает общими фразами.';
+                    
+                    if (bannerIcon) {
+                        bannerIcon.setAttribute('data-lucide', 'x-circle');
+                    }
+                    
+                    // Скрыть блоки пользы и рисков
+                    document.getElementById('benefits-risks-section').classList.add('hidden');
+                    document.getElementById('benefits-risks-section').classList.remove('grid');
+                }
+                
+                // Добавить кнопку копирования
+                addCopyButton();
+            }
+            
+            // Обновить иконки
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // Добавить кнопку копирования
+        function addCopyButton() {
+            const userPrompt = document.getElementById('user-prompt');
+            if (!userPrompt) return;
+            
+            // Удалить старую кнопку, если есть
+            const oldButton = userPrompt.querySelector('.copy-button');
+            if (oldButton) {
+                oldButton.remove();
+            }
+            
+            // Создать новую кнопку
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-button';
+            copyButton.innerHTML = '<i data-lucide="copy" style="width:14px; height:14px;"></i>';
+            copyButton.title = 'Копировать промпт в буфер обмена';
+            
+            copyButton.addEventListener('click', copyPromptToClipboard);
+            userPrompt.appendChild(copyButton);
+            
+            // Обновить иконки
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // Обновление кнопок метода
+        function updateMethodButtons() {
+            const randomButton = document.getElementById('random-method');
+            const methodicalButton = document.getElementById('methodical-method');
+            
+            if (!randomButton || !methodicalButton) return;
+            
+            if (currentState.isMethodical) {
+                randomButton.className = 'px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 text-slate-500 hover:text-slate-700';
+                methodicalButton.className = 'methodical-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2';
+            } else {
+                randomButton.className = 'random-active px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2';
+                methodicalButton.className = 'px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-2 text-slate-500 hover:text-slate-700';
+            }
+        }
+
+        // Открытие/закрытие сайдбара
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const menuButton = document.getElementById('mobile-menu-button');
+            
+            if (!sidebar || !overlay || !menuButton) return;
+            
+            if (currentState.isSidebarOpen) {
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('overlay-visible');
+                menuButton.innerHTML = '<i data-lucide="menu" style="width: 24px; height: 24px;"></i>';
+            } else {
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.add('overlay-visible');
+                menuButton.innerHTML = '<i data-lucide="x" style="width: 24px; height: 24px;"></i>';
+            }
+            
+            currentState.isSidebarOpen = !currentState.isSidebarOpen;
+            
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const menuButton = document.getElementById('mobile-menu-button');
+            
+            if (!sidebar || !overlay || !menuButton) return;
+            
+            sidebar.classList.remove('sidebar-open');
+            overlay.classList.remove('overlay-visible');
+            menuButton.innerHTML = '<i data-lucide="menu" style="width: 24px; height: 24px;"></i>';
+            currentState.isSidebarOpen = false;
+            
+            if (lucide && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // Копирование промпта в буфер обмена
+        function copyPromptToClipboard() {
+            const scenario = scenarios.find(s => s.id === currentState.activeScenarioId);
+            if (!scenario) return;
+            
+            const prompt = currentState.isMethodical ? scenario.good.prompt : scenario.bad.prompt;
+            
+            navigator.clipboard.writeText(prompt).then(() => {
+                const copyButton = document.querySelector('.copy-button');
+                if (!copyButton) return;
+                
+                const originalIcon = copyButton.innerHTML;
+                copyButton.innerHTML = '<i data-lucide="check" style="width:14px; height:14px;"></i> Скопировано!';
+                
+                // Обновить иконки
+                if (lucide && lucide.createIcons) {
+                    lucide.createIcons();
+                }
+                
+                // Очистить предыдущий таймаут
+                if (currentState.copyButtonTimeout) {
+                    clearTimeout(currentState.copyButtonTimeout);
+                }
+                
+                // Вернуть оригинальную иконку через 2 секунды
+                currentState.copyButtonTimeout = setTimeout(() => {
+                    copyButton.innerHTML = originalIcon;
+                    if (lucide && lucide.createIcons) {
+                        lucide.createIcons();
+                    }
+                }, 2000);
+            });
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Кнопка меню на мобильных устройствах
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', toggleSidebar);
+            }
+            
+            // Кнопки выбора метода
+            const randomMethodButton = document.getElementById('random-method');
+            if (randomMethodButton) {
+                randomMethodButton.addEventListener('click', () => {
+                    currentState.isMethodical = false;
+                    updateScenarioContent();
+                    updateMethodButtons();
+                });
+            }
+            
+            const methodicalMethodButton = document.getElementById('methodical-method');
+            if (methodicalMethodButton) {
+                methodicalMethodButton.addEventListener('click', () => {
+                    currentState.isMethodical = true;
+                    updateScenarioContent();
+                    updateMethodButtons();
+                });
+            }
+            
+            // Кнопки методологии и безопасности
+            const methodologyButton = document.getElementById('methodology-btn');
+            if (methodologyButton) {
+                methodologyButton.addEventListener('click', () => {
+                    switchView('methodology');
+                    closeSidebar();
+                });
+            }
+            
+            const safetyButton = document.getElementById('safety-btn');
+            if (safetyButton) {
+                safetyButton.addEventListener('click', () => {
+                    switchView('safety');
+                    closeSidebar();
+                });
+            }
+            
+            // Оверлей для закрытия сайдбара
+            const overlay = document.getElementById('overlay');
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+            
+            // Закрытие сайдбара при изменении размера окна
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768 && currentState.isSidebarOpen) {
+                    closeSidebar();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

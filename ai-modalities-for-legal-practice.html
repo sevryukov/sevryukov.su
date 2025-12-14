@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модальности ИИ для юридической практики</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-family-mono: 'Courier New', monospace;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --duration-fast: 150ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-family: var(--font-family-base);
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-teal-500), var(--color-teal-600));
+            color: white;
+            padding: var(--space-24) var(--space-16);
+            border-bottom: 3px solid var(--color-teal-700);
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            margin: 0 0 var(--space-8) 0;
+            font-size: var(--font-size-3xl);
+            font-weight: 600;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: var(--font-size-lg);
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-20);
+        }
+
+        .tabs {
+            display: flex;
+            gap: var(--space-8);
+            margin-bottom: var(--space-24);
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .tab-btn {
+            padding: var(--space-12) var(--space-16);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: var(--font-size-lg);
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all var(--duration-fast) var(--ease-standard);
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s var(--ease-standard);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        .modality-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .modality-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: var(--color-primary);
+        }
+
+        .modality-card h3 {
+            margin: 0 0 var(--space-12) 0;
+            color: var(--color-primary);
+            font-size: var(--font-size-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .modality-icon {
+            font-size: 24px;
+        }
+
+        .modality-card p {
+            margin: 0 0 var(--space-12) 0;
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(var(--color-teal-500-rgb), 0.15);
+            color: var(--color-teal-500);
+            padding: var(--space-4) var(--space-12);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            margin-right: var(--space-8);
+            margin-bottom: var(--space-8);
+            border: 1px solid rgba(var(--color-teal-500-rgb), 0.25);
+        }
+
+        .classification-section {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            margin-bottom: var(--space-24);
+        }
+
+        .classification-section h2 {
+            margin: 0 0 var(--space-16) 0;
+            color: var(--color-primary);
+            font-size: var(--font-size-2xl);
+        }
+
+        .classification-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-16);
+        }
+
+        .classification-item {
+            background: var(--color-background);
+            border-left: 4px solid var(--color-primary);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+        }
+
+        .classification-item h3 {
+            margin: 0 0 var(--space-8) 0;
+            color: var(--color-text);
+            font-size: var(--font-size-lg);
+        }
+
+        .classification-item p {
+            margin: 0 0 var(--space-8) 0;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        .example-list {
+            margin: 0;
+            padding-left: var(--space-16);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .example-list li {
+            margin-bottom: var(--space-4);
+        }
+
+        .use-case {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-base);
+            padding: var(--space-16);
+            margin-bottom: var(--space-12);
+            border-left: 4px solid var(--color-orange-500);
+        }
+
+        .use-case h4 {
+            margin: 0 0 var(--space-8) 0;
+            color: var(--color-orange-500);
+            font-size: var(--font-size-lg);
+        }
+
+        .use-case p {
+            margin: 0;
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: var(--space-12) var(--space-20);
+            border-radius: var(--radius-base);
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-standard);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        .quiz-container {
+            max-width: 700px;
+        }
+
+        .question-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            margin-bottom: var(--space-16);
+        }
+
+        .question-text {
+            font-size: var(--font-size-lg);
+            font-weight: 500;
+            margin: 0 0 var(--space-16) 0;
+            color: var(--color-text);
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--space-12);
+            cursor: pointer;
+        }
+
+        .answer-option input {
+            margin-right: var(--space-12);
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .answer-label {
+            flex: 1;
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-base);
+            border: 1px solid transparent;
+            transition: all var(--duration-fast) var(--ease-standard);
+        }
+
+        .answer-option input:checked + .answer-label {
+            background: rgba(var(--color-teal-500-rgb), 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .submit-btn {
+            margin-top: var(--space-16);
+        }
+
+        .result-message {
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-top: var(--space-16);
+            font-weight: 500;
+        }
+
+        .result-success {
+            background: rgba(51, 128, 141, 0.1);
+            color: var(--color-success);
+            border-left: 4px solid var(--color-success);
+        }
+
+        .result-error {
+            background: rgba(var(--color-red-500-rgb), 0.1);
+            color: var(--color-error);
+            border-left: 4px solid var(--color-error);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-border);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-16);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width 0.3s var(--ease-standard);
+        }
+
+        .footer {
+            text-align: center;
+            padding: var(--space-20);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            border-top: 1px solid var(--color-border);
+            margin-top: var(--space-32);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-24);
+        }
+
+        .comparison-table thead {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .comparison-table th {
+            padding: var(--space-12);
+            text-align: left;
+            font-weight: 600;
+            font-size: var(--font-size-base);
+        }
+
+        .comparison-table td {
+            padding: var(--space-12);
+            border-bottom: 1px solid var(--color-card-border);
+            font-size: var(--font-size-base);
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tbody tr:nth-child(even) {
+            background: rgba(var(--color-teal-500-rgb), 0.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s var(--ease-standard);
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--color-text-secondary);
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-16);
+            }
+
+            .header h1 {
+                font-size: var(--font-size-2xl);
+            }
+
+            .tabs {
+                gap: var(--space-4);
+            }
+
+            .tab-btn {
+                padding: var(--space-8) var(--space-12);
+                font-size: var(--font-size-base);
+            }
+
+            .modality-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .classification-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Модальности ИИ для юридической практики</h1>
+        <p>Интерактивная шпаргалка по видам модальностей и их применению</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('modalities')">Модальности</button>
+            <button class="tab-btn" onclick="switchTab('classification')">Классификация</button>
+            <button class="tab-btn" onclick="switchTab('legal-cases')">Применение в праве</button>
+            <button class="tab-btn" onclick="switchTab('quiz')">Тест знаний</button>
+        </div>
+
+        <!-- МОДАЛЬНОСТИ -->
+        <div id="modalities" class="tab-content active">
+            <h2>Основные виды модальностей</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: var(--space-20);">Нажмите на карточку для подробной информации</p>
+            
+            <div class="modality-grid">
+                <div class="modality-card" onclick="openModal('text-modal')">
+                    <h3><span class="modality-icon">📝</span> Текст</h3>
+                    <p>Обработка и анализ текстовой информации</p>
+                    <div><span class="tag">BERT</span><span class="tag">GPT</span></div>
+                </div>
+
+                <div class="modality-card" onclick="openModal('image-modal')">
+                    <h3><span class="modality-icon">🖼️</span> Изображение</h3>
+                    <p>Анализ визуальной информации</p>
+                    <div><span class="tag">Vision</span><span class="tag">CNN</span></div>
+                </div>
+
+                <div class="modality-card" onclick="openModal('audio-modal')">
+                    <h3><span class="modality-icon">🎵</span> Аудио</h3>
+                    <p>Обработка звука и речи</p>
+                    <div><span class="tag">Whisper</span><span class="tag">Wav2Vec</span></div>
+                </div>
+
+                <div class="modality-card" onclick="openModal('video-modal')">
+                    <h3><span class="modality-icon">🎬</span> Видео</h3>
+                    <p>Анализ видеоконтента и движений</p>
+                    <div><span class="tag">3D-CNN</span><span class="tag">Temporal</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- КЛАССИФИКАЦИЯ -->
+        <div id="classification" class="tab-content">
+            <h2>Классификация по типам обработки</h2>
+
+            <div class="classification-section">
+                <h2>🎯 Унимодальные модели</h2>
+                <div class="classification-row">
+                    <div class="classification-item">
+                        <h3>Определение</h3>
+                        <p>Работают с одним типом данных (текст ИЛИ изображение ИЛИ аудио)</p>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Преимущества</h3>
+                        <ul class="example-list">
+                            <li>✅ Высокая специализация</li>
+                            <li>✅ Хорошо изучены</li>
+                            <li>✅ Меньше вычислений</li>
+                        </ul>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Примеры</h3>
+                        <ul class="example-list">
+                            <li>BERT (текст)</li>
+                            <li>ResNet (изображения)</li>
+                            <li>Whisper (аудио)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="classification-section">
+                <h2>🔀 Мультимодальные модели</h2>
+                <div class="classification-row">
+                    <div class="classification-item">
+                        <h3>Определение</h3>
+                        <p>Обрабатывают несколько типов данных одновременно в одном пространстве</p>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Преимущества</h3>
+                        <ul class="example-list">
+                            <li>✅ Понимают контекст</li>
+                            <li>✅ Учитывают связи</li>
+                            <li>✅ Ближе к человеческому мышлению</li>
+                        </ul>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Примеры</h3>
+                        <ul class="example-list">
+                            <li>GPT-4V (текст+изо)</li>
+                            <li>Gemini (текст+изо+видео)</li>
+                            <li>CLIP (текст+изо)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="classification-section">
+                <h2>🔗 Кроссмодальные модели</h2>
+                <div class="classification-row">
+                    <div class="classification-item">
+                        <h3>Определение</h3>
+                        <p>Переводят информацию между модальностями (текст в изображение, речь в текст и т.д.)</p>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Преимущества</h3>
+                        <ul class="example-list">
+                            <li>✅ Генерируют новое содержание</li>
+                            <li>✅ Переводят между форматами</li>
+                            <li>✅ Универсальны</li>
+                        </ul>
+                    </div>
+                    <div class="classification-item">
+                        <h3>Примеры</h3>
+                        <ul class="example-list">
+                            <li>DALL-E (текст→изо)</li>
+                            <li>MusicLM (текст→музыка)</li>
+                            <li>Whisper (аудио→текст)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-table-wrapper" style="margin-top: var(--space-24);">
+                <h2 style="color: var(--color-primary); margin-bottom: var(--space-16);">Сравнительная таблица</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Характеристика</th>
+                            <th>Унимодальные</th>
+                            <th>Мультимодальные</th>
+                            <th>Кроссмодальные</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Входные данные</strong></td>
+                            <td>Один тип</td>
+                            <td>Несколько типов</td>
+                            <td>Несколько типов</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Сложность</strong></td>
+                            <td>Низкая</td>
+                            <td>Высокая</td>
+                            <td>Очень высокая</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Вычисления</strong></td>
+                            <td>Минимальные</td>
+                            <td>Средние</td>
+                            <td>Максимальные</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Понимание контекста</strong></td>
+                            <td>Ограниченное</td>
+                            <td>Полное</td>
+                            <td>Полное + генерация</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ПРИМЕНЕНИЕ В ПРАВЕ -->
+        <div id="legal-cases" class="tab-content">
+            <h2>💼 Практическое применение в юридической деятельности</h2>
+
+            <h3 style="color: var(--color-primary); margin-top: var(--space-24); margin-bottom: var(--space-16);">📝 Текстовая модальность (Унимодальная)</h3>
+            <div class="use-case">
+                <h4>✓ Анализ договоров и нормативных актов</h4>
+                <p>Использование BERT-подобных моделей для извлечения ключевых положений, сроков, условий из юридических документов и их автоматической классификации.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Поиск судебной практики</h4>
+                <p>Семантический поиск похожих судебных решений на основе векторных представлений текстов исков, возражений и решений суда.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Составление правовых документов</h4>
+                <p>Автоматическое создание исков, претензий, мотивировочных частей решений на основе обучающей выборки юридических текстов.</p>
+            </div>
+
+            <h3 style="color: var(--color-primary); margin-top: var(--space-24); margin-bottom: var(--space-16);">🖼️ Визуальная модальность (Унимодальная)</h3>
+            <div class="use-case">
+                <h4>✓ Анализ документов в виде скан-копий</h4>
+                <p>OCR-преобразование и анализ судебных документов, полученных как изображения, с поиском подделок и изменений.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Проверка подлинности документов</h4>
+                <p>Выявление возможных подделок печатей, подписей, способов изменения текста в физических и сканированных документах.</p>
+            </div>
+
+            <h3 style="color: var(--color-primary); margin-top: var(--space-24); margin-bottom: var(--space-16);">🎵 Аудио-модальность (Унимодальная)</h3>
+            <div class="use-case">
+                <h4>✓ Транскрибирование судебных заседаний</h4>
+                <p>Автоматическое преобразование записей заседаний в текстовый протокол с использованием Whisper или аналогичных моделей.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Анализ голоса для выявления давления/угроз</h4>
+                <p>Детектирование эмоциональных характеристик и признаков давления при проведении переговоров или медиации.</p>
+            </div>
+
+            <h3 style="color: var(--color-primary); margin-top: var(--space-24); margin-bottom: var(--space-16);">🔀 Мультимодальные модели в юридической практике</h3>
+            <div class="use-case">
+                <h4>✓ Анализ видеодоказательств</h4>
+                <p>Объединение видео (движения, жесты свидетелей), аудио (слова, тон) и текста (субтитры) для комплексного анализа видеозаписей на суде.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Анализ сложных деловых документов</h4>
+                <p>Обработка документов, содержащих текст, таблицы, графики, печати и подписи для автоматического извлечения данных.</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Интеллектуальное анкетирование клиентов</h4>
+                <p>Многоканальная система, принимающая текстовые ответы, голос клиента и видеозапись для оценки достоверности показаний.</p>
+            </div>
+
+            <h3 style="color: var(--color-primary); margin-top: var(--space-24); margin-bottom: var(--space-16);">🔗 Кроссмодальные модели в юридической практике</h3>
+            <div class="use-case">
+                <h4>✓ Генерация иллюстраций к судебным документам</h4>
+                <p>Создание схем ДТП, расположения объектов на основе текстового описания из материалов дела (текст→изображение).</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Озвучивание правовых актов</h4>
+                <p>Преобразование текстовых судебных решений в аудиоформат для слепых и слабовидящих пользователей (текст→аудио).</p>
+            </div>
+            <div class="use-case">
+                <h4>✓ Автоматическая подготовка доказательства</h4>
+                <p>Преобразование устных показаний (аудио) в письменный протокол с встроенной проверкой и визуализацией (аудио→текст+изо).</p>
+            </div>
+        </div>
+
+        <!-- ТЕСТ ЗНАНИЙ -->
+        <div id="quiz" class="tab-content">
+            <div class="quiz-container">
+                <h2>Проверьте свои знания</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: var(--space-20);">Ответьте на вопросы и оцените уровень понимания</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЫЕ ОКНА -->
+    <div id="text-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('text-modal')">&times;</button>
+            <h2>📝 Текстовая модальность</h2>
+            <h3>Описание</h3>
+            <p>Обработка и анализ текстовой информации включает в себя различные задачи, от классификации и поиска информации до генерации текста.</p>
+            <h3>Технологии</h3>
+            <ul>
+                <li><strong>BERT, RoBERTa:</strong> Глубокое понимание текста</li>
+                <li><strong>GPT-серия:</strong> Генерация текста</li>
+                <li><strong>Semantic search:</strong> Семантический поиск</li>
+            </ul>
+            <h3>Преимущества в праве</h3>
+            <ul>
+                <li>Быстрый анализ больших объемов документов</li>
+                <li>Выявление ключевых положений контрактов</li>
+                <li>Автоматический поиск прецедентов</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('image-modal')">&times;</button>
+            <h2>🖼️ Визуальная модальность</h2>
+            <h3>Описание</h3>
+            <p>Анализ изображений для выявления объектов, текста, аномалий и других визуальных характеристик.</p>
+            <h3>Технологии</h3>
+            <ul>
+                <li><strong>Vision Transformers:</strong> Анализ визуальной информации</li>
+                <li><strong>CNN (ResNet, YOLO):</strong> Обнаружение объектов</li>
+                <li><strong>OCR:</strong> Распознавание текста в изображениях</li>
+            </ul>
+            <h3>Применение в судебной практике</h3>
+            <ul>
+                <li>Анализ фотодоказательств (места происшествия, повреждения)</li>
+                <li>Выявление подделок и изменений в документах</li>
+                <li>Автоматическое извлечение текста из скан-копий</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="audio-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('audio-modal')">&times;</button>
+            <h2>🎵 Аудиомодальность</h2>
+            <h3>Описание</h3>
+            <p>Обработка звука и речи для её распознавания, анализа характеристик голоса и эмоционального содержания.</p>
+            <h3>Технологии</h3>
+            <ul>
+                <li><strong>Whisper:</strong> Транскрибирование речи</li>
+                <li><strong>Wav2Vec:</strong> Самообучающиеся модели аудио</li>
+                <li><strong>Emotion detection:</strong> Анализ эмоций в голосе</li>
+            </ul>
+            <h3>Юридическое применение</h3>
+            <ul>
+                <li>Протоколирование судебных заседаний</li>
+                <li>Анализ качества и достоверности устных показаний</li>
+                <li>Выявление давления или угроз в переговорах</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('video-modal')">&times;</button>
+            <h2>🎬 Видеомодальность</h2>
+            <h3>Описание</h3>
+            <p>Анализ видеоконтента, включающий обнаружение объектов, отслеживание движений и временной анализ.</p>
+            <h3>Технологии</h3>
+            <ul>
+                <li><strong>3D-CNN:</strong> Обработка временных последовательностей</li>
+                <li><strong>Action detection:</strong> Распознавание действий</li>
+                <li><strong>Face recognition:</strong> Распознавание лиц</li>
+            </ul>
+            <h3>Судебное значение</h3>
+            <ul>
+                <li>Анализ видеозаписей с мест происшествия</li>
+                <li>Автоматическое отслеживание движений и жестов участников</li>
+                <li>Синтез видеодоказательств в комплексный анализ</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🎓 Интерактивная шпаргалка по модальностям ИИ | Для специалистов в области Legaltech | СПбГУ</p>
+    </div>
+
+    <script>
+        const quizzes = [
+            {
+                question: "Какая модальность позволяет работать с несколькими типами данных одновременно?",
+                options: [
+                    { text: "Унимодальная", correct: false },
+                    { text: "Мультимодальная", correct: true },
+                    { text: "Кроссмодальная", correct: false },
+                    { text: "Интермодальная", correct: false }
+                ]
+            },
+            {
+                question: "Что делает кроссмодальная модель?",
+                options: [
+                    { text: "Анализирует несколько типов данных отдельно", correct: false },
+                    { text: "Переводит информацию между модальностями", correct: true },
+                    { text: "Работает только с текстом", correct: false },
+                    { text: "Игнорирует все модальности кроме текста", correct: false }
+                ]
+            },
+            {
+                question: "Какая модель подходит для транскрибирования судебных заседаний?",
+                options: [
+                    { text: "DALL-E", correct: false },
+                    { text: "ResNet", correct: false },
+                    { text: "Whisper", correct: true },
+                    { text: "CLIP", correct: false }
+                ]
+            },
+            {
+                question: "Унимодальные модели обрабатывают...",
+                options: [
+                    { text: "Несколько типов данных одновременно", correct: false },
+                    { text: "Один тип данных", correct: true },
+                    { text: "Только текст и изображения", correct: false },
+                    { text: "Все типы данных поочередно", correct: false }
+                ]
+            },
+            {
+                question: "Какое применение мультимодальных моделей в судебной практике ВЕРНО?",
+                options: [
+                    { text: "Анализ только текста договора", correct: false },
+                    { text: "Объединение видео, аудио и текста для анализа видеодоказательств", correct: true },
+                    { text: "Генерация новых судебных решений", correct: false },
+                    { text: "Замена судей на ИИ", correct: false }
+                ]
+            },
+            {
+                question: "Какая из этих моделей является кроссмодальной?",
+                options: [
+                    { text: "BERT", correct: false },
+                    { text: "ResNet", correct: false },
+                    { text: "DALL-E (текст→изображение)", correct: true },
+                    { text: "Whisper (когда используется отдельно)", correct: false }
+                ]
+            },
+            {
+                question: "Мультимодальные модели требуют больше вычислений, чем унимодальные. Это верно?",
+                options: [
+                    { text: "Да, потому что обрабатывают больше данных", correct: true },
+                    { text: "Нет, они одинаковые по сложности", correct: false },
+                    { text: "Нет, унимодальные требуют больше", correct: false },
+                    { text: "Зависит от типа данных", correct: false }
+                ]
+            },
+            {
+                question: "Какой метод кодирования используется для синхронизации текста и изображений в CLIP?",
+                options: [
+                    { text: "Отдельное кодирование в одном пространстве", correct: true },
+                    { text: "Независимое кодирование в разных пространствах", correct: false },
+                    { text: "Случайное смешивание данных", correct: false },
+                    { text: "Линейное преобразование без внимания", correct: false }
+                ]
+            }
+        ];
+
+        function initQuiz() {
+            const quizContent = document.getElementById('quizContent');
+            quizContent.innerHTML = '';
+
+            quizzes.forEach((quiz, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = `${index + 1}. ${quiz.question}`;
+                card.appendChild(questionText);
+
+                quiz.options.forEach((option, optIndex) => {
+                    const label = document.createElement('label');
+                    label.className = 'answer-option';
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = optIndex;
+                    input.dataset.correct = option.correct;
+
+                    const answerLabel = document.createElement('span');
+                    answerLabel.className = 'answer-label';
+                    answerLabel.textContent = option.text;
+
+                    label.appendChild(input);
+                    label.appendChild(answerLabel);
+                    card.appendChild(label);
+                });
+
+                quizContent.appendChild(card);
+            });
+
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'btn btn-primary submit-btn';
+            submitBtn.textContent = 'Проверить ответы';
+            submitBtn.onclick = checkQuiz;
+            quizContent.appendChild(submitBtn);
+        }
+
+        function checkQuiz() {
+            let correct = 0;
+            let total = quizzes.length;
+
+            for (let i = 0; i < quizzes.length; i++) {
+                const selected = document.querySelector(`input[name="question-${i}"]:checked`);
+                if (selected && selected.dataset.correct === 'true') {
+                    correct++;
+                }
+            }
+
+            const progressPercent = (correct / total) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+
+            let message = '';
+            if (correct === total) {
+                message = `🎉 Отлично! Вы ответили правильно на все ${total} вопросов!`;
+                var resultClass = 'result-success';
+            } else if (correct >= total * 0.7) {
+                message = `✅ Хорошо! ${correct} из ${total} правильных ответов (${Math.round(progressPercent)}%)`;
+                var resultClass = 'result-success';
+            } else {
+                message = `📚 Рекомендуем повторить материал. Вы ответили правильно на ${correct} из ${total} (${Math.round(progressPercent)}%)`;
+                var resultClass = 'result-error';
+            }
+
+            const existingResult = document.querySelector('.result-message');
+            if (existingResult) existingResult.remove();
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result-message ${resultClass}`;
+            resultDiv.textContent = message;
+            document.getElementById('quizContent').appendChild(resultDiv);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'quiz') {
+                initQuiz();
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Закрытие модальных окон при клике на фон
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
