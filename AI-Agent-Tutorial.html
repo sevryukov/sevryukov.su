@@ -1,0 +1,3846 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI в юридической практике | Образовательный ресурс | СПбГУ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-bg: #eff6ff;
+            --secondary: #64748b;
+            --success: #10b981;
+            --success-bg: #ecfdf5;
+            --success-border: #a7f3d0;
+            --error: #ef4444;
+            --error-bg: #fef2f2;
+            --error-border: #fecaca;
+            --warning: #f59e0b;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 16px;
+            --sidebar-width: 300px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: 64px;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 72px;
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .sidebar-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-title {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .nav-section {
+            margin-bottom: 8px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .nav-section-title {
+            opacity: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-item-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .nav-item-text {
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .nav-item-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .nav-progress {
+            position: absolute;
+            right: 12px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar.collapsed .nav-progress {
+            display: none;
+        }
+
+        .nav-check {
+            display: none;
+        }
+
+        .nav-item.completed .nav-check {
+            display: block;
+            color: var(--success);
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--border-light);
+            color: var(--text);
+        }
+
+        .sidebar-toggle svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            transition: var(--transition);
+        }
+
+        .sidebar.collapsed .sidebar-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 64px;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            background: rgba(248, 250, 252, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: var(--text);
+        }
+
+        .mobile-toggle svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-current {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .page-content {
+            flex: 1;
+            padding: 32px;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .sidebar.collapsed ~ .main-content .page-content {
+            max-width: 1100px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-bg), #dbeafe, #e0f2fe);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-svg {
+            width: 100%;
+            max-width: 650px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .hero-badge svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-bg);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .section-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-title-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .card-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .info-box {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+
+        .info-box-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-box-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .info-box.info {
+            background: var(--primary-bg);
+            border: 1px solid #bfdbfe;
+        }
+
+        .info-box.info .info-box-icon {
+            background: rgba(37, 99, 235, 0.15);
+        }
+
+        .info-box.info .info-box-icon svg {
+            stroke: var(--primary);
+        }
+
+        .info-box.success {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+        }
+
+        .info-box.success .info-box-icon {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .info-box.success .info-box-icon svg {
+            stroke: var(--success);
+        }
+
+        .info-box.warning {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+        }
+
+        .info-box.warning .info-box-icon {
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .info-box.warning .info-box-icon svg {
+            stroke: var(--warning);
+        }
+
+        .info-box-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .info-box-text strong {
+            font-weight: 600;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .model-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .model-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .model-card.active {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .model-card-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .model-card-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .model-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .model-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .quiz-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .quiz-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .quiz-number {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quiz-badge {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .quiz-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .quiz-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .quiz-status.unanswered {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .quiz-status.correct {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .quiz-status.incorrect {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .quiz-situation {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-bottom: 24px;
+        }
+
+        .quiz-situation-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .quiz-situation-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .quiz-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            position: relative;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--primary-light);
+            background: var(--primary-bg);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .quiz-option.correct-answer {
+            border-color: var(--success);
+            background: var(--success-bg);
+        }
+
+        .quiz-option.incorrect-answer {
+            border-color: var(--error);
+            background: var(--error-bg);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        .option-marker {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .quiz-option.selected .option-marker {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .quiz-option.correct-answer .option-marker {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .quiz-option.incorrect-answer .option-marker {
+            background: var(--error);
+            border-color: var(--error);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            color: var(--text);
+        }
+
+        .option-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .option-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-hint {
+            background: var(--warning-bg);
+            color: var(--warning);
+            border: 2px solid var(--warning-border);
+        }
+
+        .btn-hint:hover {
+            background: var(--warning-border);
+        }
+
+        .btn-next {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: var(--radius);
+            animation: slideDown 0.3s ease;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
+        .explanation.correct {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+        }
+
+        .explanation.incorrect {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .explanation-header svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .explanation.correct .explanation-header {
+            color: var(--success);
+        }
+
+        .explanation.correct .explanation-header svg {
+            stroke: var(--success);
+        }
+
+        .explanation.incorrect .explanation-header {
+            color: var(--error);
+        }
+
+        .explanation.incorrect .explanation-header svg {
+            stroke: var(--error);
+        }
+
+        .explanation-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .hint-box {
+            display: none;
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: var(--radius-sm);
+            animation: slideDown 0.3s ease;
+        }
+
+        .hint-box.show {
+            display: block;
+        }
+
+        .hint-box-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--warning);
+            margin-bottom: 8px;
+        }
+
+        .hint-box-header svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .hint-box-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .conclusion {
+            display: none;
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: var(--primary-bg);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-sm);
+            animation: slideDown 0.3s ease;
+        }
+
+        .conclusion.show {
+            display: block;
+        }
+
+        .conclusion-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .conclusion-header svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .conclusion-text {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 600;
+            line-height: 1.7;
+        }
+
+        .framework-list {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .framework-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .framework-item:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .framework-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .framework-content h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .framework-content p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .comparison-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .comparison-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .comparison-card .icon-wrapper {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-card .icon-wrapper svg {
+            width: 28px;
+            height: 28px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .comparison-card ul li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .comparison-card ul li svg {
+            width: 16px;
+            height: 16px;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .example-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .example-card-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .example-card-header-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .example-card-header-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .example-card-header h4 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .example-card-body {
+            padding: 20px 24px;
+        }
+
+        .example-card-body p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .example-card-body .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
+        }
+
+        .example-card-body .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .example-card-body .step-icon svg {
+            width: 14px;
+            height: 14px;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .example-card-body .step-text {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .flowchart {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .flowchart svg {
+            width: 100%;
+        }
+
+        .decision-tree {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .decision-tree-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .dt-step {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .dt-step-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .dt-step-number {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .dt-step-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .dt-step-body {
+            padding: 16px;
+        }
+
+        .dt-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .dt-branches {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .dt-branch {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dt-branch-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .dt-branch-yes .dt-branch-label {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .dt-branch-no .dt-branch-label {
+            background: #ecfdf5;
+            color: #16a34a;
+        }
+
+        .dt-outcome {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid;
+        }
+
+        .dt-outcome-human {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .dt-outcome-assistant {
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+
+        .dt-outcome-agent {
+            background: #fef3c7;
+            border-color: #fde68a;
+        }
+
+        .dt-outcome-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .dt-outcome-text {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dt-outcome-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .dt-arrow {
+            text-align: center;
+            font-size: 20px;
+            color: var(--text-muted);
+            padding: 8px 0;
+            line-height: 1;
+        }
+
+        .dt-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+        }
+
+        .dt-legend-title {
+            font-weight: 700;
+            color: var(--text);
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .dt-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .decision-tree {
+                padding: 20px;
+            }
+            
+            .dt-branches {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag-blue {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .tag-green {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .tag-orange {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .rule-box {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 2px solid #86efac;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .rule-box-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rule-box-title svg {
+            width: 20px;
+            height: 20px;
+            stroke: #166534;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .rule-box ul {
+            list-style: none;
+        }
+
+        .rule-box ul li {
+            font-size: 14px;
+            color: #15803d;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rule-box ul li svg {
+            width: 16px;
+            height: 16px;
+            stroke: #166534;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .nav-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .nav-btn-next {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-btn-next:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, var(--primary-bg), #dbeafe);
+            border: 2px solid #bfdbfe;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .score-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .score-icon svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .score-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .score-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 12px;
+            background: white;
+            border-radius: 6px;
+            margin: 0 auto 24px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-brand-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .footer-brand-text {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .footer-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            z-index: 50;
+            transition: var(--transition);
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .scroll-top svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .scroll-top.show {
+            display: flex;
+        }
+
+        @media (max-width: 1024px) {
+            .model-grid,
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+                width: var(--sidebar-width);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .page-content {
+                padding: 20px;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .top-bar {
+                padding: 12px 20px;
+            }
+
+            .quiz-container {
+                padding: 20px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <span class="sidebar-title">AI Legal Tutorial</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Начало</div>
+                <a class="nav-item active" data-section="intro" onclick="navigateTo('intro')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </span>
+                    <span class="nav-item-text">Введение</span>
+                    <span class="nav-check">
+                        <svg viewBox="0 0 24 24" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Теория</div>
+                <a class="nav-item" data-section="models" onclick="navigateTo('models')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </span>
+                    <span class="nav-item-text">Модели взаимодействия</span>
+                </a>
+                <a class="nav-item" data-section="framework" onclick="navigateTo('framework')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                    </span>
+                    <span class="nav-item-text">Рамка принятия решений</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Практические кейсы</div>
+                <a class="nav-item" data-section="case1" onclick="navigateTo('case1')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 1: Правовая справка</span>
+                </a>
+                <a class="nav-item" data-section="case2" onclick="navigateTo('case2')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 2: Сложный договор</span>
+                </a>
+                <a class="nav-item" data-section="case3" onclick="navigateTo('case3')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 3: Массовая обработка</span>
+                </a>
+                <a class="nav-item" data-section="case4" onclick="navigateTo('case4')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 4: Цепочка процессов</span>
+                </a>
+                <a class="nav-item" data-section="case5" onclick="navigateTo('case5')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 5: Судебная стратегия</span>
+                </a>
+                <a class="nav-item" data-section="case6" onclick="navigateTo('case6')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 6: Ответы заказчикам</span>
+                </a>
+                <a class="nav-item" data-section="case7" onclick="navigateTo('case7')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 7: Мониторинг</span>
+                </a>
+                <a class="nav-item" data-section="case8" onclick="navigateTo('case8')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 8: Переговоры</span>
+                </a>
+                <a class="nav-item" data-section="case9" onclick="navigateTo('case9')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 9: Проверка документов</span>
+                </a>
+                <a class="nav-item" data-section="case10" onclick="navigateTo('case10')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </span>
+                    <span class="nav-item-text">Кейс 10: Меморандум</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Примеры и итоги</div>
+                <a class="nav-item" data-section="examples" onclick="navigateTo('examples')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    </span>
+                    <span class="nav-item-text">Пример: согласование</span>
+                </a>
+                <a class="nav-item" data-section="summary" onclick="navigateTo('summary')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </span>
+                    <span class="nav-item-text">Итоговая рамка</span>
+                </a>
+                <a class="nav-item" data-section="results" onclick="navigateTo('results')">
+                    <span class="nav-item-icon">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </span>
+                    <span class="nav-item-text">Результаты</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="mobile-toggle" onclick="toggleMobileSidebar()">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="breadcrumb">
+                    <span id="breadcrumbText">Введение</span>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <span class="progress-text" id="progressText">0 / 10</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!-- Introduction Section -->
+            <div class="section active" id="section-intro">
+                <div class="hero">
+                    <svg class="hero-svg" viewBox="0 0 650 300" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:0.1"/>
+                                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.05"/>
+                            </linearGradient>
+                            <linearGradient id="heroGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#2563eb"/>
+                                <stop offset="100%" style="stop-color:#3b82f6"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Background shapes -->
+                        <rect x="20" y="20" width="610" height="260" rx="16" fill="url(#heroGrad1)"/>
+                        <!-- Laptop -->
+                        <rect x="220" y="100" width="210" height="130" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+                        <rect x="230" y="108" width="190" height="105" rx="4" fill="#f1f5f9"/>
+                        <!-- Screen content -->
+                        <rect x="240" y="118" width="80" height="6" rx="3" fill="#2563eb" opacity="0.3"/>
+                        <rect x="240" y="130" width="120" height="4" rx="2" fill="#94a3b8"/>
+                        <rect x="240" y="138" width="100" height="4" rx="2" fill="#94a3b8"/>
+                        <rect x="240" y="146" width="140" height="4" rx="2" fill="#94a3b8"/>
+                        <rect x="240" y="158" width="90" height="6" rx="3" fill="#10b981" opacity="0.3"/>
+                        <rect x="240" y="170" width="110" height="4" rx="2" fill="#94a3b8"/>
+                        <rect x="240" y="178" width="85" height="4" rx="2" fill="#94a3b8"/>
+                        <!-- AI icon on screen -->
+                        <circle cx="395" cy="140" r="22" fill="#2563eb" opacity="0.1"/>
+                        <path d="M388 135 l7-5 l7 5 v10 l-7 5 l-7-5 z" fill="#2563eb" opacity="0.8"/>
+                        <circle cx="395" cy="133" r="2" fill="white"/>
+                        <circle cx="395" cy="147" r="2" fill="white"/>
+                        <!-- Laptop base -->
+                        <path d="M210 230 L220 240 L440 240 L450 230 Z" fill="#e2e8f0"/>
+                        <!-- Documents -->
+                        <rect x="60" y="140" width="120" height="150" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+                        <rect x="75" y="160" width="90" height="4" rx="2" fill="#2563eb" opacity="0.2"/>
+                        <rect x="75" y="172" width="70" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="75" y="182" width="85" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="75" y="192" width="60" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="75" y="208" width="90" height="4" rx="2" fill="#f59e0b" opacity="0.2"/>
+                        <rect x="75" y="220" width="75" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="75" y="230" width="50" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <!-- Document 2 -->
+                        <rect x="480" y="130" width="110" height="140" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" opacity="0.8"/>
+                        <rect x="495" y="150" width="80" height="4" rx="2" fill="#2563eb" opacity="0.2"/>
+                        <rect x="495" y="162" width="60" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="495" y="172" width="70" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="495" y="182" width="55" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <rect x="495" y="198" width="80" height="4" rx="2" fill="#10b981" opacity="0.2"/>
+                        <rect x="495" y="210" width="65" height="3" rx="1.5" fill="#cbd5e1"/>
+                        <!-- Connection lines -->
+                        <line x1="180" y1="200" x2="220" y2="200" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.5"/>
+                        <line x1="430" y1="200" x2="480" y2="200" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.5"/>
+                        <!-- Floating elements -->
+                        <circle cx="50" cy="80" r="15" fill="#dbeafe" opacity="0.6"/>
+                        <circle cx="600" cy="60" r="12" fill="#dcfce7" opacity="0.6"/>
+                        <circle cx="550" cy="250" r="10" fill="#fef3c7" opacity="0.6"/>
+                        <!-- Text labels -->
+                        <text x="120" y="135" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">Документы</text>
+                        <text x="325" y="270" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#2563eb" text-anchor="middle">ИИ-анализ</text>
+                        <text x="535" y="125" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#64748b" text-anchor="middle">Результат</text>
+                    </svg>
+                    <h1>AI в юридической практике</h1>
+                    <p>Интерактивный курс по выбору оптимального ресурса (человек, ИИ-ассистент, ИИ-агент) для решения юридических задач. Изучите ключевые принципы и проверьте знания на практических кейсах.</p>
+                    <div class="hero-badge">
+                        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Образовательный ресурс | СПбГУ
+                    </div>
+                </div>
+
+                <div class="info-box info">
+                    <div class="info-box-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="info-box-text">
+                        <strong>О курсе:</strong> Этот туториал поможет вам понять, когда использовать ИИ-ассистента, ИИ-агента или полагаться на человека-юриста. Вы изучите ключевые вопросы для принятия решений и пройдёте 10 практических кейсов.
+                    </div>
+                </div>
+
+                <div class="section-header" style="margin-top: 32px;">
+                    <h2>Что вы узнаете</h2>
+                </div>
+
+                <div class="framework-list">
+                    <div class="framework-item">
+                        <div class="framework-number">1</div>
+                        <div class="framework-content">
+                            <h4>Три модели взаимодействия</h4>
+                            <p>Человек ↔ ИИ-ассистент ↔ ИИ-агент: ключевые различия и области применения каждой модели.</p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">2</div>
+                        <div class="framework-content">
+                            <h4>Рамка принятия решений</h4>
+                            <p>6 ключевых вопросов, которые помогут определить оптимальный ресурс для любой юридической задачи.</p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">3</div>
+                        <div class="framework-content">
+                            <h4>Практические кейсы</h4>
+                            <p>10 реальных ситуаций из юридической практики с интерактивными заданиями и подробными объяснениями.</p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">4</div>
+                        <div class="framework-content">
+                            <h4>Примеры применения</h4>
+                            <p>Как одна и та же задача (согласование договора) решается в трёх разных моделях.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <div></div>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('models')">
+                        Начать обучение
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Models Section -->
+            <div class="section" id="section-models">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <h2>Модели взаимодействия</h2>
+                    <p>В юридической функции граница проходит не между «человек против ИИ», а между разными типами взаимодействия.</p>
+                </div>
+
+                <div class="model-grid">
+                    <div class="model-card">
+                        <div class="model-card-icon" style="background: #dbeafe;">
+                            <svg viewBox="0 0 24 24" stroke="#2563eb"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <h3>Человек</h3>
+                        <p>Несёт ответственность, принимает сложные решения, ведёт переговоры</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-card-icon" style="background: #dcfce7;">
+                            <svg viewBox="0 0 24 24" stroke="#16a34a"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <h3>ИИ-ассистент</h3>
+                        <p>Реактивен, ведом человеком, «спроси — получи ответ»</p>
+                    </div>
+                    <div class="model-card">
+                        <div class="model-card-icon" style="background: #fef3c7;">
+                            <svg viewBox="0 0 24 24" stroke="#d97706"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <h3>ИИ-агент</h3>
+                        <p>Проактивен, работает на цель, инициирует действия сам</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        ИИ-ассистент (модель инструмента)
+                    </div>
+                    <div class="card-text">
+                        <p><strong>Модель:</strong> «Спроси — получи ответ»</p>
+                        <p><strong>Похоже на:</strong> очень сильного младшего или среднего аналитика</p>
+                        <p style="margin-top: 8px;"><strong>Человек:</strong> ставит задачи, разбивает работу на этапы, контролирует каждый шаг</p>
+                        <p style="margin-top: 12px;"><strong>Типичные задачи:</strong> подготовка проекта договора о конфиденциальности, краткое изложение судебной практики, выявление рисков в договоре, сравнение версий документа, подготовка аналитической записки, ответы сотрудникам компании</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        ИИ-агент (модель делегирования)
+                    </div>
+                    <div class="card-text">
+                        <p><strong>Модель:</strong> «Вот цель — добейся результата и сообщай при исключениях»</p>
+                        <p><strong>Похоже на:</strong> операционного координатора или руководителя проектов в юридическом подразделении</p>
+                        <p style="margin-top: 8px;"><strong>Агент:</strong> сам определяет следующий шаг, инициирует действия, управляет рабочим процессом, эскалирует проблемы</p>
+                        <p style="margin-top: 12px;"><strong>Типичные задачи:</strong> управление жизненным циклом договоров, приём запросов — классификация — назначение исполнителя, мониторинг законодательства, массовая проверка на соответствие требованиям, конвейер проверки документов при сделках</p>
+                    </div>
+                </div>
+
+                <div class="info-box success">
+                    <div class="info-box-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="info-box-text">
+                        <strong>Запомните ключевое отличие:</strong> ИИ-ассистент — реактивен, ведом человеком; ИИ-агент — проактивен, работает на цель и может сам инициировать действия, вопросы и эскалации.
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('intro')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('framework')">
+                        Рамка принятия решений
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Framework Section -->
+            <div class="section" id="section-framework">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                    </div>
+                    <h2>Рамка принятия решений</h2>
+                    <p>Перед выбором ресурса задайте 6 ключевых вопросов.</p>
+                </div>
+
+                <div class="decision-tree">
+                    <h3 class="decision-tree-title">Дерево принятия решений</h3>
+                    
+                    <!-- Step 1: Определите задачу -->
+                    <div class="dt-step">
+                        <div class="dt-step-header">
+                            <span class="dt-step-number">1</span>
+                            <span class="dt-step-label">Начало</span>
+                        </div>
+                        <div class="dt-step-body">
+                            <div class="dt-question">Определите задачу</div>
+                        </div>
+                    </div>
+
+                    <div class="dt-arrow">↓</div>
+
+                    <!-- Step 2: Высокая цена ошибки -->
+                    <div class="dt-step">
+                        <div class="dt-step-header">
+                            <span class="dt-step-number">2</span>
+                            <span class="dt-step-label">Вопрос</span>
+                        </div>
+                        <div class="dt-step-body">
+                            <div class="dt-question">Высокая цена ошибки?</div>
+                            <div class="dt-branches">
+                                <div class="dt-branch dt-branch-yes">
+                                    <div class="dt-branch-label">Да</div>
+                                    <div class="dt-outcome dt-outcome-human">
+                                        <span class="dt-outcome-icon">👤</span>
+                                        <span class="dt-outcome-text">ЧЕЛОВЕК</span>
+                                        <span class="dt-outcome-desc">Основной исполнитель</span>
+                                    </div>
+                                </div>
+                                <div class="dt-branch dt-branch-no">
+                                    <div class="dt-branch-label">Нет ↓</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dt-arrow">↓</div>
+
+                    <!-- Step 3: Автономные действия -->
+                    <div class="dt-step">
+                        <div class="dt-step-header">
+                            <span class="dt-step-number">3</span>
+                            <span class="dt-step-label">Вопрос</span>
+                        </div>
+                        <div class="dt-step-body">
+                            <div class="dt-question">Нужны автономные действия?</div>
+                            <div class="dt-branches">
+                                <div class="dt-branch dt-branch-no">
+                                    <div class="dt-branch-label">Нет</div>
+                                    <div class="dt-outcome dt-outcome-assistant">
+                                        <span class="dt-outcome-icon">🤖</span>
+                                        <span class="dt-outcome-text">ИИ-АССИСТЕНТ</span>
+                                        <span class="dt-outcome-desc">«Думать вместе»</span>
+                                    </div>
+                                </div>
+                                <div class="dt-branch dt-branch-yes">
+                                    <div class="dt-branch-label">Да</div>
+                                    <div class="dt-outcome dt-outcome-agent">
+                                        <span class="dt-outcome-icon">🤖</span>
+                                        <span class="dt-outcome-text">ИИ-АГЕНТ</span>
+                                        <span class="dt-outcome-desc">«Вести процесс»</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dt-arrow">↓</div>
+
+                    <!-- Step 4: Интеграции между системами -->
+                    <div class="dt-step">
+                        <div class="dt-step-header">
+                            <span class="dt-step-number">4</span>
+                            <span class="dt-step-label">Уточнение</span>
+                        </div>
+                        <div class="dt-step-body">
+                            <div class="dt-question">Нужны интеграции между системами?</div>
+                            <div class="dt-branches">
+                                <div class="dt-branch dt-branch-yes">
+                                    <div class="dt-branch-label">Да →</div>
+                                    <div class="dt-outcome dt-outcome-agent">
+                                        <span class="dt-outcome-icon">🤖</span>
+                                        <span class="dt-outcome-text">ИИ-АГЕНТ</span>
+                                    </div>
+                                </div>
+                                <div class="dt-branch dt-branch-no">
+                                    <div class="dt-branch-label">Нет →</div>
+                                    <div class="dt-outcome dt-outcome-assistant">
+                                        <span class="dt-outcome-icon">🤖</span>
+                                        <span class="dt-outcome-text">ИИ-АССИСТЕНТ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="dt-legend">
+                        <span class="dt-legend-title">Условные обозначения:</span>
+                        <span class="dt-legend-item dt-legend-human">🔴 Высокий риск — человек</span>
+                        <span class="dt-legend-item dt-legend-assistant">🟢 ИИ-ассистент (инструмент)</span>
+                        <span class="dt-legend-item dt-legend-agent">🟡 ИИ-агент (делегирование)</span>
+                    </div>
+                </div>
+
+                <div class="framework-list">
+                    <div class="framework-item">
+                        <div class="framework-number">1</div>
+                        <div class="framework-content">
+                            <h4>Кто управляет процессом выполнения задачи?</h4>
+                            <p>Человек пошагово ведёт исполнение → <span class="tag tag-green">ИИ-ассистент</span><br>Можно делегировать достижение результата → <span class="tag tag-orange">ИИ-агент</span></p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">2</div>
+                        <div class="framework-content">
+                            <h4>Нужно ли системе самостоятельно инициировать действия?</h4>
+                            <p>Напоминать, запрашивать данные, сообщать о рисках, запускать следующий этап?<br>Нет → <span class="tag tag-green">ИИ-ассистент</span> | Да → <span class="tag tag-orange">ИИ-агент</span></p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">3</div>
+                        <div class="framework-content">
+                            <h4>Задача — это единичное действие или процесс?</h4>
+                            <p>«Подготовь краткое изложение» → <span class="tag tag-green">ассистент</span><br>«Веди полный цикл договора до подписания» → <span class="tag tag-orange">агент</span></p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">4</div>
+                        <div class="framework-content">
+                            <h4>Есть ли необходимость работать в нескольких системах?</h4>
+                            <p>Система управления клиентами, хранилище документов, почта, календарь, проверка контрагентов, базы санкционных списков<br>Нет → <span class="tag tag-green">ассистент</span> | Да → <span class="tag tag-orange">агент</span></p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">5</div>
+                        <div class="framework-content">
+                            <h4>Требуется ли человеку сохранять постоянный контроль?</h4>
+                            <p>Да, человек принимает почти все промежуточные решения → <span class="tag tag-green">ассистент</span><br>Нет, достаточно контрольных точек → <span class="tag tag-orange">агент</span></p>
+                        </div>
+                    </div>
+                    <div class="framework-item">
+                        <div class="framework-number">6</div>
+                        <div class="framework-content">
+                            <h4>Какова цена ошибки?</h4>
+                            <p>Определяет: нужен ли человек в контуре, насколько глубокой может быть автономность.<br>Высокая цена ошибки → почти всегда <span class="tag tag-blue">человек участвует в принятии решений</span>, даже при использовании агента.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-box-title">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Очень короткое правило для руководителя
+                    </div>
+                    <ul>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Если нужно <strong>«думать вместе»</strong> → ИИ-ассистент
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Если нужно <strong>«вести процесс»</strong> → ИИ-агент
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Если нужно <strong>«нести ответственность и принимать сложные решения»</strong> → человек
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('models')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case1')">
+                        Практические кейсы
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 1 -->
+            <div class="section" id="section-case1">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 1: Типовая правовая справка</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-1">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">1</div>
+                            <div class="quiz-title">Правовая справка</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-1">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Нужно за 30 минут собрать обзор изменений в регулировании персональных данных для внутренней встречи.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-1">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(1, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Человек (юрист) самостоятельно подготовит обзор</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(1, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-ассистент для первичного обзора + помощник юриста для проверки</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(1, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">ИИ-агент полностью автоматизирует процесс</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-1">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание на ключевые факторы: время ограничено (30 минут), цена ошибки умеренная, задача типовая. Нужна скорость, но не полная автономность.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-1">
+                        <div class="explanation-header" id="exp-header-1"></div>
+                        <div class="explanation-text" id="exp-text-1"></div>
+                    </div>
+
+                    <div class="conclusion" id="conclusion-1">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Использовать ИИ-ассистента. Помощник юриста — для последующей проверки и адаптации под нужды бизнеса.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(1)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-1" onclick="checkAnswer(1)" disabled>
+                            Проверить ответ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('framework')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case2')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 2 -->
+            <div class="section" id="section-case2">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 2: Подготовка сложного договора</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-2">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">2</div>
+                            <div class="quiz-title">Сложный договор</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-2">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Подготовка документации о покупке/продаже доли с нестандартным распределением рисков.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-2">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(2, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-агент полностью подготовит документацию</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(2, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-ассистент + юрист: ИИ для ускорения (варианты формулировок, поиск практики), юрист — основная работа</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(2, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Только человек без использования ИИ</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-2">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: высокая неопределённость, много контекста и нюансов, переговорные и репутационные риски. Но ИИ может ускорить отдельные части работы.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-2"></div>
+                    <div class="conclusion" id="conclusion-2">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Основная работа — помощник юриста/юрист. ИИ-ассистент — как инструмент ускорения: варианты формулировок, поиск практики, сверка.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(2)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-2" onclick="checkAnswer(2)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case1')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case3')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 3 -->
+            <div class="section" id="section-case3">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 3: Массовая обработка документов</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-3">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">3</div>
+                            <div class="quiz-title">Массовая обработка</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-3">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Проверка 2 000 соглашений о конфиденциальности на наличие отклонений от шаблона.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-3">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(3, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-ассистент: юрист отправляет каждый документ на проверку</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(3, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-агент: автономная проверка всех документов, человек подключается только к спорным случаям</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(3, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Команда юристов вручную проверяет каждый документ</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-3">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: высокий объём (2 000 документов), высокая повторяемость, понятные критерии анализа. Нужна автономная обработка с привлечением человека только к отклонениям.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-3"></div>
+                    <div class="conclusion" id="conclusion-3">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Использовать ИИ-агента. Человек подключается только к спорным случаям.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(3)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-3" onclick="checkAnswer(3)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case2')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case4')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 4 -->
+            <div class="section" id="section-case4">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 4: Координация цепочки процессов</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-4">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">4</div>
+                            <div class="quiz-title">Цепочка процессов</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-4">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Получение заявки → проверка контрагента → подготовка договора → отправка на согласование → контроль подписания.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-4">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(4, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-ассистент: юрист пошагово контролирует каждый этап</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(4, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-агент как «цифровой рабочий процесс»: автономное выполнение всех этапов</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(4, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Только человек без автоматизации</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-4">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: много этапов и интеграций, минимальная творческая составляющая. Нужна автономная координация между системами.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-4"></div>
+                    <div class="conclusion" id="conclusion-4">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Использовать ИИ-агента как «цифровой рабочий процесс».</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(4)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-4" onclick="checkAnswer(4)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case3')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case5')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 5 -->
+            <div class="section" id="section-case5">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 5: Судебная стратегия</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-5">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">5</div>
+                            <div class="quiz-title">Судебная стратегия</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-5">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Компания выбирает между агрессивной судебной стратегией и мировым соглашением.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-5">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(5, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-агент: автономный анализ и принятие решения</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(5, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Человек — основной исполнитель. ИИ — только как аналитический помощник</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(5, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">ИИ-ассистент: юрист задаёт вопросы ИИ и принимает решение на основе ответов</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-5">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: нужна оценка рисков, поведения оппонента, позиции судьи и бизнеса. Это стратегическое суждение с высокой неопределённостью.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-5"></div>
+                    <div class="conclusion" id="conclusion-5">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Использовать человека. ИИ — только как аналитический помощник.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(5)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-5" onclick="checkAnswer(5)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case4')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case6')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 6 -->
+            <div class="section" id="section-case6">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 6: Ответы внутренним заказчикам</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-6">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">6</div>
+                            <div class="quiz-title">Ответы заказчикам</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-6">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Служба управления персоналом и отдел продаж ежедневно задают однотипные вопросы по соглашениям о конфиденциальности, предложениям о работе и закупкам.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-6">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(6, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Юрист лично отвечает на каждый запрос</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(6, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-ассистент или внутренний юридический чат-бот. Человек — только для сложных случаев</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(6, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">ИИ-агент полностью автономно обрабатывает все запросы</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-6">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: высокая повторяемость, стандартизированные ответы, большой объём. Нужна скорость с возможностью привлечения человека к сложным вопросам.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-6"></div>
+                    <div class="conclusion" id="conclusion-6">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">ИИ-ассистент или внутренний юридический чат-бот. Человек — только для сложных случаев.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(6)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-6" onclick="checkAnswer(6)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case5')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case7')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 7 -->
+            <div class="section" id="section-case7">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 7: Мониторинг изменений законодательства</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-7">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">7</div>
+                            <div class="quiz-title">Мониторинг</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-7">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Компания работает в нескольких юрисдикциях и отслеживает изменения санкционного регулирования.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-7">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(7, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-ассистент: юрист ежедневно запрашивает обновления</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(7, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-агент: непрерывное наблюдение и автоматическое уведомление</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(7, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Человек: юрист вручную отслеживает источники</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-7">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: важно непрерывное наблюдение и автоматическое уведомление. Нужна система, которая самостоятельно отслеживает изменения и сообщает о них.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-7"></div>
+                    <div class="conclusion" id="conclusion-7">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">ИИ-агент. Юрист принимает решения по последствиям изменений.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(7)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-7" onclick="checkAnswer(7)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case6')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case8')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 8 -->
+            <div class="section" id="section-case8">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 8: Подготовка позиции для переговоров</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-8">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">8</div>
+                            <div class="quiz-title">Переговоры</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-8">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Сложные переговоры с ключевым поставщиком на фоне конфликта.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-8">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(8, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-агент: автономно ведёт переговоры от имени компании</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(8, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Человек — основной исполнитель. ИИ — вспомогательный аналитик</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(8, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">ИИ-ассистент: юрист использует ИИ для подготовки, но ИИ ведёт переговоры</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-8">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: критичны отношения, тональность и политический контекст. Нужен эмоциональный интеллект и «чтение» контрагента.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-8"></div>
+                    <div class="conclusion" id="conclusion-8">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Человек — основной исполнитель. ИИ — вспомогательный аналитик.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(8)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-8" onclick="checkAnswer(8)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case7')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case9')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 9 -->
+            <div class="section" id="section-case9">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 9: Проверка документов при сделке</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-9">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">9</div>
+                            <div class="quiz-title">Проверка документов</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-9">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Нужно быстро просмотреть 15 000 документов в виртуальной комнате данных при подготовке сделки.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-9">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(9, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">Только команда юристов: глубокая интерпретация каждого документа</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(9, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">ИИ-агент + ИИ-ассистент для первичного анализа. Юристы — для интерпретации критичных рисков</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(9, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">Только ИИ-агент: полная автоматизация без участия юристов</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-9">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: на первом этапе важна скорость классификации и поиска аномалий. Но критичные риски требуют человеческого суждения. Нужна гибридная модель.</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-9"></div>
+                    <div class="conclusion" id="conclusion-9">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">ИИ-агент + ИИ-ассистент для первичного анализа. Юристы — для интерпретации критичных рисков.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(9)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-9" onclick="checkAnswer(9)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case8')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('case10')">
+                        Следующий кейс
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Case 10 -->
+            <div class="section" id="section-case10">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </div>
+                    <h2>Кейс 10: Меморандум для топ-менеджмента</h2>
+                </div>
+
+                <div class="quiz-container" id="quiz-10">
+                    <div class="quiz-header">
+                        <div class="quiz-number">
+                            <div class="quiz-badge">10</div>
+                            <div class="quiz-title">Меморандум</div>
+                        </div>
+                        <div class="quiz-status unanswered" id="status-10">Не отвечено</div>
+                    </div>
+
+                    <div class="quiz-situation">
+                        <div class="quiz-situation-label">Ситуация</div>
+                        <div class="quiz-situation-text">Меморандум для совета директоров по потенциальному регуляторному нарушению.</div>
+                    </div>
+
+                    <div class="quiz-question">Какой ресурс оптимально использовать?</div>
+
+                    <div class="quiz-options" id="options-10">
+                        <div class="quiz-option" data-value="a" onclick="selectOption(10, 'a')">
+                            <div class="option-marker">A</div>
+                            <div class="option-text">ИИ-агент: полностью подготовит и отправит меморандум</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="b" onclick="selectOption(10, 'b')">
+                            <div class="option-marker">B</div>
+                            <div class="option-text">Человек отвечает за итоговый продукт. ИИ используется как ускоритель подготовки материалов</div>
+                            <div class="option-icon"></div>
+                        </div>
+                        <div class="quiz-option" data-value="c" onclick="selectOption(10, 'c')">
+                            <div class="option-marker">C</div>
+                            <div class="option-text">ИИ-ассистент: юрист задаёт вопросы, ИИ формирует готовый меморандум</div>
+                            <div class="option-icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="hint-box" id="hint-10">
+                        <div class="hint-box-header">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </div>
+                        <div class="hint-box-text">Обратите внимание: высокая цена ошибки и репутационный риск. Потребитель результата — совет директоров. Кто несёт ответственность за итоговый продукт?</div>
+                    </div>
+
+                    <div class="explanation" id="explanation-10"></div>
+                    <div class="conclusion" id="conclusion-10">
+                        <div class="conclusion-header">
+                            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Вывод
+                        </div>
+                        <div class="conclusion-text">Человек отвечает за итоговый продукт. ИИ используется как ускоритель подготовки материалов и исследований.</div>
+                    </div>
+
+                    <div class="quiz-actions">
+                        <button class="btn btn-hint" onclick="showHint(10)">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            Подсказка
+                        </button>
+                        <button class="btn btn-primary" id="checkBtn-10" onclick="checkAnswer(10)" disabled>Проверить ответ</button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case9')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('examples')">
+                        Примеры применения
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div class="section" id="section-examples">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    </div>
+                    <h2>Пример: согласование договора в трёх моделях</h2>
+                    <p>Одна и та же задача, решаемая по-разному в зависимости от выбранной модели.</p>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-card-header">
+                        <div class="example-card-header-icon" style="background: #dbeafe;">
+                            <svg viewBox="0 0 24 24" stroke="#2563eb"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <h4>Человек + ИИ-ассистент</h4>
+                    </div>
+                    <div class="example-card-body">
+                        <div class="step">
+                            <div class="step-icon" style="background: #dbeafe;">
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Юрист сам ведёт процесс согласования</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #dcfce7;">
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Просит ИИ проверить риски</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #dcfce7;">
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Просит ИИ предложить формулировку раздела</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #dcfce7;">
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Просит ИИ сделать краткое изложение</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            </div>
+                            <div class="step-text">Юрист контролирует каждый шаг</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-card-header">
+                        <div class="example-card-header-icon" style="background: #fef3c7;">
+                            <svg viewBox="0 0 24 24" stroke="#d97706"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <h4>Человек + ИИ-агент</h4>
+                    </div>
+                    <div class="example-card-body">
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Агент получает договор и запускает проверку</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Собирает замечания от согласующих</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Напоминает согласующим о сроках</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Проверяет соблюдение сроков</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fef3c7;">
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Сообщает юристу о нестандартных условиях</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #dbeafe;">
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            </div>
+                            <div class="step-text">Юрист подключается только в сложных местах</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <div class="example-card-header">
+                        <div class="example-card-header-icon" style="background: #fce7f3;">
+                            <svg viewBox="0 0 24 24" stroke="#db2777"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4>Только человек</h4>
+                    </div>
+                    <div class="example-card-body">
+                        <p>Используется, если:</p>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fce7f3;">
+                                <svg viewBox="0 0 24 24" stroke="#db2777"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Сделка критична</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fce7f3;">
+                                <svg viewBox="0 0 24 24" stroke="#db2777"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Высокая политическая чувствительность</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fce7f3;">
+                                <svg viewBox="0 0 24 24" stroke="#db2777"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Уникальная структура сделки</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-icon" style="background: #fce7f3;">
+                                <svg viewBox="0 0 24 24" stroke="#db2777"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <div class="step-text">Существенный риск судебного разбирательства или регуляторного воздействия</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('case10')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('summary')">
+                        Итоговая рамка
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section" id="section-summary">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h2>Итоговая рамка для руководителя</h2>
+                    <p>Обобщающие правила и принципы выбора ресурса.</p>
+                </div>
+
+                <div class="rule-box">
+                    <div class="rule-box-title">
+                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Общее правило
+                    </div>
+                    <ul>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Типовые + массовые задачи → <strong>ИИ</strong>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Сложные + рискованные + политические задачи → <strong>человек</strong>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Максимальный эффект → <strong>гибридная модель «человек + ИИ»</strong>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-box info">
+                    <div class="info-box-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </div>
+                    <div class="info-box-text">
+                        <strong>Ключевое уточнение:</strong> В юридической функции граница проходит не между «человек против ИИ», а между человеком ↔ ИИ-ассистентом (модель инструмента) и человеком ↔ ИИ-агентом (модель делегирования).
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>ИИ-ассистент</h4>
+                        <div class="icon-wrapper" style="background: #dcfce7;">
+                            <svg viewBox="0 0 24 24" stroke="#16a34a"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <ul>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                                Задача единичная
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                                Человек — «водитель процесса»
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                                Поиск, анализ, подготовка проектов, краткое изложение
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#16a34a"><polyline points="20 6 9 17 4 12"/></svg>
+                                Нет необходимости действовать между шагами
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>ИИ-агент</h4>
+                        <div class="icon-wrapper" style="background: #fef3c7;">
+                            <svg viewBox="0 0 24 24" stroke="#d97706"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <ul>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                                Задача процессная
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                                Самостоятельные действия нужны
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                                Координация, мониторинг, маршрутизация
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#d97706"><polyline points="20 6 9 17 4 12"/></svg>
+                                Интеграции между системами
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>Человек</h4>
+                        <div class="icon-wrapper" style="background: #dbeafe;">
+                            <svg viewBox="0 0 24 24" stroke="#2563eb"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <ul>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><polyline points="20 6 9 17 4 12"/></svg>
+                                Высокая стратегическая неопределённость
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><polyline points="20 6 9 17 4 12"/></svg>
+                                Переговоры нужны
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><polyline points="20 6 9 17 4 12"/></svg>
+                                Политическое/репутационное суждение
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" stroke="#2563eb"><polyline points="20 6 9 17 4 12"/></svg>
+                                Экзистенциальная цена ошибки
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('examples')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('results')">
+                        Посмотреть результаты
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section" id="section-results">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <h2>Ваши результаты</h2>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-icon">
+                        <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#2563eb"/>
+                                    <stop offset="100%" style="stop-color:#3b82f6"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="30" cy="30" r="28" fill="url(#badgeGrad)"/>
+                            <path d="M22 28 l6 6 l12-14" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="30" cy="30" r="24" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="score-value" id="scoreValue">0 / 10</div>
+                    <div class="score-label" id="scoreLabel">Ответьте на все кейсы, чтобы увидеть результат</div>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" id="scoreBarFill" style="width: 0%"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="resetQuiz()" style="margin-top: 8px;">
+                        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                        Начать заново
+                    </button>
+                </div>
+
+                <div id="resultsDetails"></div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="navigateTo('summary')">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Назад
+                    </button>
+                    <button class="nav-btn nav-btn-next" onclick="navigateTo('intro')">
+                        К началу
+                        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-brand">
+                <div class="footer-brand-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span class="footer-brand-text">AI в юридической практике</span>
+            </div>
+            <div class="footer-subtitle">Образовательный ресурс | СПбГУ</div>
+            <div class="footer-disclaimer">
+                Все материалы предназначены для образовательных целей и не заменяют профессиональную юридическую консультацию.
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <script>
+        const quizData = {
+            1: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Хотя юрист может подготовить обзор самостоятельно, это займёт значительно больше 30 минут. При умеренной цене ошибки и типовой задаче ИИ-ассистент значительно ускорит процесс.' },
+                    b: { type: 'correct', text: 'Верно! Цена ошибки умеренная, задача типовая, важна скорость. ИИ-ассистент быстро соберёт первичный обзор, а помощник юриста проверит и адаптирует под нужды бизнеса.' },
+                    c: { type: 'incorrect', text: 'Неверно. ИИ-агент избыточен для этой задачи. Здесь нужна не автономность, а инструмент для ускорения. Достаточно ИИ-ассистента с последующей проверкой человеком.' }
+                }
+            },
+            2: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Документация о покупке/продаже доли с нестандартным распределением рисков требует глубокого понимания контекста, переговорных стратегий и репутационных рисков. Полная автоматизация через ИИ-агента недопустима.' },
+                    b: { type: 'correct', text: 'Верно! Высокая неопределённость, много контекста и нюансов. Основная работа — юрист/помощник юриста. ИИ-ассистент используется как инструмент ускорения: варианты формулировок, поиск практики, сверка.' },
+                    c: { type: 'incorrect', text: 'Неверно. Хотя основная работа действительно выполняется человеком, отказ от ИИ-ассистента лишает юриста мощного инструмента ускорения. ИИ-ассистент может помочь с вариантами формулировок и поиском практики.' }
+                }
+            },
+            3: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Отправлять каждое из 2 000 соглашений на проверку через ИИ-ассистента неэффективно. При высокой повторяемости и понятных критериях нужна автономная обработка — это задача для ИИ-агента.' },
+                    b: { type: 'correct', text: 'Верно! Высокая повторяемость, понятные критерии анализа. ИИ-агент автономно проверит все документы и подключит человека только к спорным случаям — оптимальная модель для массовых задач.' },
+                    c: { type: 'incorrect', text: 'Неверно. Ручная проверка 2 000 документов командой юристов — крайне неэффективна. При понятных критериях и высокой повторяемости ИИ-агент значительно ускорит процесс.' }
+                }
+            },
+            4: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Пошаговый контроль каждого этапа через ИИ-ассистента не использует преимущества автономности. При множестве этапов и интеграциях нужен ИИ-агент, который самостоятельно координирует процесс.' },
+                    b: { type: 'correct', text: 'Верно! Много этапов и интеграций, минимальная творческая составляющая. ИИ-агент как «цифровой рабочий процесс» идеально подходит для автономной координации цепочки процессов.' },
+                    c: { type: 'incorrect', text: 'Неверно. Ручное выполнение всех этапов без автоматизации неэффективно. При повторяемой цепочке действий с интеграциями между системами ИИ-агент значительно ускорит процесс.' }
+                }
+            },
+            5: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Судебная стратегия требует стратегического суждения, оценки рисков, поведения оппонента и позиции судьи. Это задача для человека с высокой ценой ошибки.' },
+                    b: { type: 'correct', text: 'Верно! Нужна оценка рисков, поведения оппонента, позиции судьи и бизнеса. Человек — основной исполнитель. ИИ может использоваться только как аналитический помощник для сбора данных.' },
+                    c: { type: 'incorrect', text: 'Неверно. Хотя ИИ-ассистент может помочь с аналитикой, стратегическое суждение при выборе между агрессивной стратегией и мировым соглашением требует человеческого опыта и ответственности.' }
+                }
+            },
+            6: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Личный ответ юриста на каждый из множества типовых запросов неэффективен. При высокой повторяемости и стандартизированных ответах лучше использовать ИИ-ассистента или чат-бот.' },
+                    b: { type: 'correct', text: 'Верно! Высокая повторяемость, стандартизированные ответы. ИИ-ассистент или внутренний юридический чат-бот справится с большинством запросов, а человек подключится только для сложных случаев.' },
+                    c: { type: 'incorrect', text: 'Неверно. Хотя задача массовая, здесь не нужна полная автономность агента. Достаточно ИИ-ассистента или чат-бота, который отвечает на типовые вопросы. Человек должен контролировать сложные случаи.' }
+                }
+            },
+            7: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Ежедневный ручной запрос обновлений через ИИ-ассистента неэффективен. При необходимости непрерывного наблюдения нужна автономная система — ИИ-агент.' },
+                    b: { type: 'correct', text: 'Верно! Важно непрерывное наблюдение и автоматическое уведомление. ИИ-агент самостоятельно отслеживает изменения в нескольких юрисдикциях и уведомляет юриста. Юрист принимает решения по последствиям.' },
+                    c: { type: 'incorrect', text: 'Неверно. Ручной мониторинг изменений в нескольких юрисдикциях практически невозможен. Нужна автоматизированная система наблюдения — ИИ-агент.' }
+                }
+            },
+            8: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. ИИ не обладает эмоциональным интеллектом и не может «читать» контрагента. Сложные переговоры с ключевым поставщиком на фоне конфликта требуют человеческого участия.' },
+                    b: { type: 'correct', text: 'Верно! Критичны отношения, тональность и политический контекст. Человек — основной исполнитель. ИИ может использоваться как вспомогательный аналитик для подготовки позиции.' },
+                    c: { type: 'incorrect', text: 'Неверно. Хотя ИИ-ассистент может помочь с подготовкой, ведение переговоров требует эмоционального интеллекта и понимания политического контекста — это задача для человека.' }
+                }
+            },
+            9: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Глубокая интерпретация каждого из 15 000 документов командой юристов на первом этапе неэффективна. Нужна скорость первичного анализа.' },
+                    b: { type: 'correct', text: 'Верно! На первом этапе важна скорость классификации и поиска аномалий — здесь помогают ИИ-агент и ИИ-ассистент. Юристы подключаются для интерпретации критичных рисков.' },
+                    c: { type: 'incorrect', text: 'Неверно. Полная автоматизация без участия юристов недопустима при проверке документов. Критичные риски требуют человеческого суждения и интерпретации.' }
+                }
+            },
+            10: {
+                correct: 'b',
+                explanations: {
+                    a: { type: 'incorrect', text: 'Неверно. Меморандум для совета директоров по потенциальному регуляторному нарушению — задача с высокой ценой ошибки и репутационным риском. Полная автоматизация недопустима.' },
+                    b: { type: 'correct', text: 'Верно! Высокая цена ошибки и репутационный риск. Человек отвечает за итоговый продукт. ИИ используется как ускоритель подготовки материалов и исследований.' },
+                    c: { type: 'incorrect', text: 'Неверно. Хотя ИИ-ассистент может ускорить подготовку материалов, итоговый меморандум для совета директоров требует человеческого контроля и ответственности.' }
+                }
+            }
+        };
+
+        const state = {
+            currentSection: 'intro',
+            answers: {},
+            checked: {},
+            hintsShown: {},
+            score: 0
+        };
+
+        function navigateTo(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('section-' + sectionId);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === sectionId) {
+                    item.classList.add('active');
+                }
+            });
+
+            const breadcrumbMap = {
+                'intro': 'Введение',
+                'models': 'Модели взаимодействия',
+                'framework': 'Рамка принятия решений',
+                'case1': 'Кейс 1: Правовая справка',
+                'case2': 'Кейс 2: Сложный договор',
+                'case3': 'Кейс 3: Массовая обработка',
+                'case4': 'Кейс 4: Цепочка процессов',
+                'case5': 'Кейс 5: Судебная стратегия',
+                'case6': 'Кейс 6: Ответы заказчикам',
+                'case7': 'Кейс 7: Мониторинг',
+                'case8': 'Кейс 8: Переговоры',
+                'case9': 'Кейс 9: Проверка документов',
+                'case10': 'Кейс 10: Меморандум',
+                'examples': 'Пример: согласование',
+                'summary': 'Итоговая рамка',
+                'results': 'Результаты'
+            };
+            document.getElementById('breadcrumbText').textContent = breadcrumbMap[sectionId] || sectionId;
+
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            state.currentSection = sectionId;
+
+            if (sectionId === 'results') {
+                updateResults();
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        });
+
+        function selectOption(caseNum, value) {
+            if (state.checked[caseNum]) return;
+
+            document.querySelectorAll('#options-' + caseNum + ' .quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            const selected = document.querySelector('#options-' + caseNum + ' .quiz-option[data-value="' + value + '"]');
+            if (selected) {
+                selected.classList.add('selected');
+            }
+
+            state.answers[caseNum] = value;
+            document.getElementById('checkBtn-' + caseNum).disabled = false;
+        }
+
+        function showHint(caseNum) {
+            const hintBox = document.getElementById('hint-' + caseNum);
+            if (hintBox) {
+                hintBox.classList.toggle('show');
+            }
+        }
+
+        function checkAnswer(caseNum) {
+            if (state.checked[caseNum]) return;
+
+            const answer = state.answers[caseNum];
+            if (!answer) return;
+
+            state.checked[caseNum] = true;
+            const data = quizData[caseNum];
+            const isCorrect = answer === data.correct;
+
+            if (isCorrect) {
+                state.score++;
+            }
+
+            document.querySelectorAll('#options-' + caseNum + ' .quiz-option').forEach(opt => {
+                opt.classList.add('disabled');
+                const val = opt.dataset.value;
+                if (val === data.correct) {
+                    opt.classList.add('correct-answer');
+                    const icon = opt.querySelector('.option-icon');
+                    icon.innerHTML = '<svg viewBox="0 0 24 24" stroke="#10b981" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+                } else if (val === answer && !isCorrect) {
+                    opt.classList.add('incorrect-answer');
+                    const icon = opt.querySelector('.option-icon');
+                    icon.innerHTML = '<svg viewBox="0 0 24 24" stroke="#ef4444" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+                }
+            });
+
+            const statusEl = document.getElementById('status-' + caseNum);
+            if (statusEl) {
+                statusEl.className = 'quiz-status ' + (isCorrect ? 'correct' : 'incorrect');
+                statusEl.textContent = isCorrect ? 'Верно' : 'Неверно';
+            }
+
+            const expEl = document.getElementById('explanation-' + caseNum);
+            const expHeader = document.getElementById('exp-header-' + caseNum);
+            const expText = document.getElementById('exp-text-' + caseNum);
+            if (expEl && expHeader && expText) {
+                const expData = data.explanations[answer];
+                expEl.className = 'explanation show ' + expData.type;
+                expEl.id = 'explanation-' + caseNum;
+                
+                if (expData.type === 'correct') {
+                    expHeader.innerHTML = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Правильно!';
+                } else {
+                    expHeader.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Неверно';
+                }
+                expText.textContent = expData.text;
+            }
+
+            const concEl = document.getElementById('conclusion-' + caseNum);
+            if (concEl) {
+                concEl.classList.add('show');
+            }
+
+            document.getElementById('checkBtn-' + caseNum).disabled = true;
+
+            const navItem = document.querySelector('.nav-item[data-section="case' + caseNum + '"]');
+            if (navItem) {
+                navItem.classList.add('completed');
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const checkedCount = Object.keys(state.checked).length;
+            document.getElementById('progressText').textContent = checkedCount + ' / 10';
+            document.getElementById('progressFill').style.width = (checkedCount * 10) + '%';
+        }
+
+        function updateResults() {
+            const checkedCount = Object.keys(state.checked).length;
+            document.getElementById('scoreValue').textContent = state.score + ' / ' + checkedCount;
+            document.getElementById('scoreBarFill').style.width = checkedCount > 0 ? ((state.score / checkedCount) * 100) + '%' : '0%';
+
+            if (checkedCount === 10) {
+                if (state.score >= 9) {
+                    document.getElementById('scoreLabel').textContent = 'Отлично! Вы отлично понимаете выбор ресурса для юридических задач!';
+                } else if (state.score >= 7) {
+                    document.getElementById('scoreLabel').textContent = 'Хорошо! Вы хорошо разбираетесь в теме, но есть над чем поработать.';
+                } else if (state.score >= 5) {
+                    document.getElementById('scoreLabel').textContent = 'Удовлетворительно. Рекомендуем повторить теоретические разделы.';
+                } else {
+                    document.getElementById('scoreLabel').textContent = 'Рекомендуем внимательно изучить теоретические материалы и попробовать снова.';
+                }
+            } else if (checkedCount > 0) {
+                document.getElementById('scoreLabel').textContent = 'Ответьте на все кейсы для полной оценки (отвечено: ' + checkedCount + ' / 10)';
+            }
+
+            const detailsEl = document.getElementById('resultsDetails');
+            let detailsHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                if (state.checked[i]) {
+                    const isCorrect = state.answers[i] === quizData[i].correct;
+                    detailsHTML += '<div class="card" style="border-left: 4px solid ' + (isCorrect ? '#10b981' : '#ef4444') + ';">';
+                    detailsHTML += '<div class="card-title" style="font-size: 14px;">';
+                    detailsHTML += '<span>' + (isCorrect ? '' : '') + '</span>';
+                    detailsHTML += '<span>Кейс ' + i + '</span>';
+                    detailsHTML += '</div>';
+                    detailsHTML += '<div class="card-text">' + quizData[i].explanations[state.answers[i]].text + '</div>';
+                    detailsHTML += '</div>';
+                }
+            }
+            detailsEl.innerHTML = detailsHTML;
+        }
+
+        function resetQuiz() {
+            state.answers = {};
+            state.checked = {};
+            state.hintsShown = {};
+            state.score = 0;
+
+            for (let i = 1; i <= 10; i++) {
+                const options = document.querySelectorAll('#options-' + i + ' .quiz-option');
+                options.forEach(opt => {
+                    opt.classList.remove('selected', 'correct-answer', 'incorrect-answer', 'disabled');
+                    const icon = opt.querySelector('.option-icon');
+                    if (icon) icon.innerHTML = '';
+                });
+
+                const statusEl = document.getElementById('status-' + i);
+                if (statusEl) {
+                    statusEl.className = 'quiz-status unanswered';
+                    statusEl.textContent = 'Не отвечено';
+                }
+
+                const expEl = document.getElementById('explanation-' + i);
+                if (expEl) {
+                    expEl.className = 'explanation';
+                }
+
+                const concEl = document.getElementById('conclusion-' + i);
+                if (concEl) {
+                    concEl.classList.remove('show');
+                }
+
+                const hintEl = document.getElementById('hint-' + i);
+                if (hintEl) {
+                    hintEl.classList.remove('show');
+                }
+
+                const checkBtn = document.getElementById('checkBtn-' + i);
+                if (checkBtn) {
+                    checkBtn.disabled = true;
+                }
+
+                const navItem = document.querySelector('.nav-item[data-section="case' + i + '"]');
+                if (navItem) {
+                    navItem.classList.remove('completed');
+                }
+            }
+
+            updateProgress();
+            navigateTo('intro');
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
