@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Цифровая гигиена и личная безопасность в интернете — Интерактивный туториал</title>
+<style>
+:root {
+  --primary: #1a2744;
+  --primary-light: #243354;
+  --accent: #2ea8a0;
+  --accent-light: #3cc4bb;
+  --accent-bg: #e8f6f5;
+  --danger: #d9534f;
+  --danger-bg: #fde8e8;
+  --success: #28a745;
+  --success-bg: #e6f9ec;
+  --warning: #e8a820;
+  --warning-bg: #fdf6e4;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --bg: #f4f7fa;
+  --white: #ffffff;
+  --sidebar-w: 280px;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(26,39,68,0.08);
+  --shadow-lg: 0 8px 32px rgba(26,39,68,0.12);
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--primary);
+  color: #c8d6e5;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.sidebar-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.sidebar-header .subtitle {
+  font-size: 0.78rem;
+  color: var(--accent-light);
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: #9fb3c8;
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: all var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav a:hover {
+  background: rgba(255,255,255,0.05);
+  color: #e2e8f0;
+}
+
+.sidebar-nav a.active {
+  background: rgba(46,168,160,0.12);
+  color: var(--accent-light);
+  border-left-color: var(--accent-light);
+  font-weight: 600;
+}
+
+.sidebar-nav a .nav-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sidebar-nav a.active .nav-num {
+  background: var(--accent);
+  color: #fff;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.75rem;
+  color: #5a7a94;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-w);
+  right: 0;
+  height: 4px;
+  background: rgba(46,168,160,0.15);
+  z-index: 200;
+  transition: left var(--transition);
+}
+
+.progress-bar .fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  margin-left: var(--sidebar-w);
+  padding: 32px 40px 80px;
+  max-width: 920px;
+  transition: margin-left var(--transition);
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 300;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.3rem;
+  box-shadow: var(--shadow);
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--primary) 0%, #1e3a5f 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 48px 44px;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60%; right: -20%;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: rgba(46,168,160,0.12);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -40%; left: 10%;
+  width: 250px; height: 250px;
+  border-radius: 50%;
+  background: rgba(46,168,160,0.08);
+}
+
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+.hero p {
+  margin-top: 14px;
+  font-size: 1.05rem;
+  opacity: 0.85;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero .badge {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 6px 16px;
+  background: rgba(46,168,160,0.25);
+  border: 1px solid rgba(46,168,160,0.4);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  color: var(--accent-light);
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== SECTIONS ===== */
+.section {
+  margin-bottom: 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  flex: 1;
+}
+
+.section-toggle {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  transition: transform var(--transition);
+}
+
+.section-header.collapsed .section-toggle {
+  transform: rotate(-90deg);
+}
+
+.section-body {
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+}
+
+.section-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid transparent;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card.highlight {
+  border-left-color: var(--accent);
+}
+
+.card.warning {
+  border-left-color: var(--warning);
+}
+
+.card.danger {
+  border-left-color: var(--danger);
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.card p, .card li {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.card ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.card ul li {
+  margin-bottom: 6px;
+}
+
+/* ===== COLLAPSIBLE DETAILS ===== */
+.details {
+  margin-top: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.details-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-light);
+  user-select: none;
+  transition: background var(--transition);
+}
+
+.details-summary:hover {
+  background: #eef2f7;
+}
+
+.details-summary::before {
+  content: '\25B6';
+  font-size: 0.7rem;
+  transition: transform var(--transition);
+}
+
+.details[open] .details-summary::before {
+  transform: rotate(90deg);
+}
+
+.details-content {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* ===== CONTRADICTION VISUAL ===== */
+.contradiction-box {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.contradiction-side {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.contradiction-side .icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.contradiction-side h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.contradiction-side p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.contradiction-vs {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--danger);
+}
+
+/* ===== QUIZ / INTERACTIVE ===== */
+.quiz {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin: 20px 0;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--accent);
+}
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.quiz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.quiz h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.quiz-scenario {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  font-size: 0.93rem;
+  line-height: 1.7;
+  border-left: 3px solid var(--accent);
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.quiz-option:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.quiz-option.correct {
+  border-color: var(--success);
+  background: var(--success-bg);
+}
+
+.quiz-option.wrong {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.quiz-option .opt-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; height: 28px;
+  border-radius: 6px;
+  background: #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+
+.quiz-option.selected .opt-letter,
+.quiz-option:hover .opt-letter {
+  background: var(--accent);
+  color: #fff;
+}
+
+.quiz-option.correct .opt-letter {
+  background: var(--success);
+  color: #fff;
+}
+
+.quiz-option.wrong .opt-letter {
+  background: var(--danger);
+  color: #fff;
+}
+
+.quiz-feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.quiz-feedback.show { display: block; }
+
+.quiz-feedback.correct-fb {
+  background: var(--success-bg);
+  border-left: 3px solid var(--success);
+  color: #155724;
+}
+
+.quiz-feedback.wrong-fb {
+  background: var(--danger-bg);
+  border-left: 3px solid var(--danger);
+  color: #721c24;
+}
+
+.quiz-feedback.nuance-fb {
+  background: var(--warning-bg);
+  border-left: 3px solid var(--warning);
+  color: #856404;
+}
+
+/* ===== ATTACKER CASE ===== */
+.attacker-case {
+  background: linear-gradient(135deg, #1a2744 0%, #2d1a44 100%);
+  border-radius: 16px;
+  padding: 32px;
+  color: #e2e8f0;
+  margin: 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.attacker-case::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: rgba(217,83,79,0.08);
+}
+
+.attacker-case h3 {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.attacker-case .ac-subtitle {
+  font-size: 0.88rem;
+  opacity: 0.7;
+  margin-bottom: 18px;
+}
+
+.attacker-profile {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.attacker-profile h4 {
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.attacker-profile p {
+  font-size: 0.88rem;
+  opacity: 0.85;
+}
+
+.attacker-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.attacker-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.attacker-step:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.attacker-step.active {
+  background: rgba(217,83,79,0.15);
+  border-color: rgba(217,83,79,0.4);
+}
+
+.attacker-step .step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(217,83,79,0.3);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.attacker-step .step-text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.attacker-step .step-detail {
+  display: none;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.85rem;
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+.attacker-step.active .step-detail {
+  display: block;
+}
+
+.attacker-reflection {
+  background: rgba(46,168,160,0.12);
+  border: 1px solid rgba(46,168,160,0.3);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 16px;
+}
+
+.attacker-reflection h4 {
+  color: var(--accent-light);
+  font-size: 0.92rem;
+  margin-bottom: 8px;
+}
+
+.attacker-reflection p {
+  font-size: 0.87rem;
+  opacity: 0.85;
+}
+
+/* ===== KEY POINT ===== */
+.key-point {
+  display: flex;
+  gap: 14px;
+  background: var(--accent-bg);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin: 16px 0;
+  border: 1px solid rgba(46,168,160,0.2);
+}
+
+.key-point .kp-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.key-point p {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1a5c56;
+}
+
+/* ===== TABLE ===== */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.info-table thead th {
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.info-table tbody td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: var(--white);
+}
+
+.info-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.info-table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+/* ===== RESOURCES LIST ===== */
+.resource-list {
+  list-style: none;
+  counter-reset: res;
+}
+
+.resource-list li {
+  counter-increment: res;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--white);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  font-size: 0.9rem;
+  transition: box-shadow var(--transition);
+}
+
+.resource-list li:hover {
+  box-shadow: var(--shadow);
+}
+
+.resource-list li::before {
+  content: counter(res);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== BACK TO TOP ===== */
+.back-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  transition: all var(--transition);
+}
+
+.back-top:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .hamburger {
+    display: flex;
+  }
+  .main {
+    margin-left: 0;
+    padding: 24px 18px 60px;
+  }
+  .progress-bar {
+    left: 0;
+  }
+  .hero {
+    padding: 32px 24px;
+  }
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .contradiction-box {
+    grid-template-columns: 1fr;
+  }
+  .contradiction-vs {
+    text-align: center;
+  }
+  .attacker-case {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.3rem; }
+  .section-title { font-size: 1.2rem; }
+  .quiz { padding: 18px; }
+}
+
+/* ===== SMOOTH ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-body > * {
+  animation: fadeInUp 0.4s ease both;
+}
+
+/* ===== SCROLLBAR ===== */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* ===== SCORE PANEL ===== */
+.score-panel {
+  position: fixed;
+  bottom: 28px;
+  left: calc(var(--sidebar-w) + 20px);
+  background: var(--white);
+  border-radius: 12px;
+  padding: 10px 18px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  z-index: 200;
+  transition: left var(--transition), opacity var(--transition);
+}
+
+.score-panel .score-icon {
+  font-size: 1.2rem;
+}
+
+.score-panel .score-val {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .score-panel { left: 20px; }
+}
+
+/* ===== OVERLAY ===== */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 90;
+}
+.overlay.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Hamburger -->
+<button class="hamburger" id="hamburger" aria-label="Меню">&#9776;</button>
+
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Цифровая гигиена и безопасность</h2>
+    <div class="subtitle">Интерактивный туториал</div>
+  </div>
+  <div class="sidebar-nav" id="sidebarNav">
+    <a href="#section-0" class="active" data-section="0"><span class="nav-num">&#8962;</span> Введение</a>
+    <a href="#section-1" data-section="1"><span class="nav-num">1</span> Фундамент: триада ИБ</a>
+    <a href="#section-2" data-section="2"><span class="nav-num">2</span> Противоречия целей безопасности</a>
+    <a href="#section-3" data-section="3"><span class="nav-num">3</span> Угрозы и уязвимости</a>
+    <a href="#section-4" data-section="4"><span class="nav-num">4</span> Логика злоумышленника</a>
+    <a href="#section-5" data-section="5"><span class="nav-num">5</span> Векторы атак</a>
+    <a href="#section-6" data-section="6"><span class="nav-num">6</span> Анонимность: миф и реальность</a>
+    <a href="#section-7" data-section="7"><span class="nav-num">7</span> ИИ как новое оружие</a>
+    <a href="#section-8" data-section="8"><span class="nav-num">8</span> Перестаём быть большинством</a>
+    <a href="#section-9" data-section="9"><span class="nav-num">9</span> Технические средства защиты</a>
+    <a href="#section-10" data-section="10"><span class="nav-num">10</span> Близкие — брешь и бастион</a>
+    <a href="#section-11" data-section="11"><span class="nav-num">11</span> Zero Trust для всех</a>
+    <a href="#section-12" data-section="12"><span class="nav-num">12</span> Ресурсы</a>
+  </div>
+  <div class="sidebar-footer">
+    На основе курса С.Ю. Севрюкова, СПбГУ
+  </div>
+</nav>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"><div class="fill" id="progressFill"></div></div>
+
+<!-- Score panel -->
+<div class="score-panel" id="scorePanel">
+  <span class="score-icon">&#127942;</span>
+  Баллы: <span class="score-val" id="scoreVal">0</span>
+</div>
+
+<!-- Main content -->
+<div class="main" id="mainContent">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero" id="section-0">
+    <h1>Цифровая гигиена и личная безопасность в интернете</h1>
+    <p>Интерактивный туториал для юристов: от фундаментальных противоречий информационной безопасности до практических навыков защиты. Проверяйте свои знания в мини-кейсах и учитесь взглянуть на себя глазами злоумышленника.</p>
+    <div class="badge">&#128270; 12 разделов &middot; 8 интерактивных кейсов &middot; Разворачивающиеся детали</div>
+  </div>
+
+  <!-- ===== SECTION 1: ФУНДАМЕНТ ===== -->
+  <div class="section" id="section-1">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">1</span>
+      <h2 class="section-title">Фундамент: триада информационной безопасности</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card highlight">
+        <h3>Предпосылки цифровой трансформации</h3>
+        <p>Цифровое проникает во все сферы жизни. То, что раньше было вспомогательным инструментом, стало первичным: Digital-first означает, что цифровая форма взаимодействия теперь главная, а не дополнительная. При этом действия в цифровом пространстве напрямую отражаются на материальном мире — от банковских переводов до управления инфраструктурой.</p>
+        <p>Ключевая проблема: наше восприятие цифрового пространства существенно отличается от машинного. То, что человек «видит» на экране, — лишь верхний слой. Машиночитаемые данные, метаданные, логи, куки — невидимый слой, в котором утекают данные и происходят атаки.</p>
+      </div>
+
+      <div class="card highlight">
+        <h3>Три цели информационной безопасности (CIA)</h3>
+        <table class="info-table">
+          <thead>
+            <tr><th>Цель</th><th>Смысл</th><th>Пример нарушения</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Конфиденциальность</strong></td><td>Доступ к информации только авторизованным лицам</td><td>Утечка персональных данных клиентов</td></tr>
+            <tr><td><strong>Целостность</strong></td><td>Достоверность и полнота информации и методов её обработки</td><td>Подмена реквизитов в платёжном документе</td></tr>
+            <tr><td><strong>Доступность</strong></td><td>Доступ к информации и активам по мере необходимости</td><td>DDoS-атака на сайт государственных услуг</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <details class="details">
+        <summary class="details-summary">Почему информация вообще нуждается в защите?</summary>
+        <div class="details-content">
+          <p><strong>Информация может иметь стоимость.</strong> Коммерческая тайна, персональные данные, отчёты — всё это можно продать или использовать для конкуренции. Нарушение целостности такой информации — прямой финансовый ущерб.</p>
+          <p><strong>Информация может быть использована против вас.</strong> Сведения о местоположении, привычках, связях, состоянии здоровья — инструмент манипуляции, шантажа и социальной инженерии. Конфиденциальность — это не паранойя, а рациональная потребность.</p>
+          <p><strong>Даже секрет — это информация.</strong> Факт существования секрета уже информативен. Например, если вы скрываете принадлежность к организации, сам факт скрытия при утечке может стать компроматом. Доступность информации о защите — тоже часть безопасности.</p>
+        </div>
+      </details>
+
+      <div class="key-point">
+        <span class="kp-icon">&#128161;</span>
+        <p>Запомните: все три цели (конфиденциальность, целостность, доступность) равнозначны. Ни одну нельзя «отменить» ради другой — но на практике они конфликтуют. Об этом — в следующем разделе.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: ПРОТИВОРЕЧИЯ ===== -->
+  <div class="section" id="section-2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">2</span>
+      <h2 class="section-title">Противоречия целей безопасности</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="card danger">
+        <h3>Абсолютная защита невозможна</h3>
+        <p>Усиление одной цели ИБ неизбежно ослабляет другую. Это не техническая ошибка, а фундаментальное свойство систем защиты. Понимание этих противоречий — ключ к осознанному выбору приемлемого уровня риска.</p>
+      </div>
+
+      <div class="contradiction-box">
+        <div class="contradiction-side">
+          <div class="icon">&#128274;</div>
+          <h4>Конфиденциальность</h4>
+          <p>Данные скрыты, доступ ограничен, минимальное число копий</p>
+        </div>
+        <div class="contradiction-vs">VS</div>
+        <div class="contradiction-side">
+          <div class="icon">&#128272;</div>
+          <h4>Целостность и доступность</h4>
+          <p>Избыточность: больше узлов хранения, больше резервных копий</p>
+        </div>
+      </div>
+
+      <div class="card warning">
+        <h3>Противоречие 1: Избыточность vs. Конфиденциальность</h3>
+        <p>Для повышения целостности и доступности мы создаём избыточные копии данных — резервные серверы, облачные хранилища, распределённые системы. Каждая дополнительная копия — ещё одна точка потенциальной утечки. Чем больше узлов хранят данные, тем сложнее контролировать доступ к каждому из них и обеспечивать конфиденциальность.</p>
+      </div>
+
+      <div class="card warning">
+        <h3>Противоречие 2: Неизменность vs. Право на забвение</h3>
+        <p>Для гарантии целостности данных применяют криптографию и распределённые реестры (blockchain). Записи становятся неизменяемыми и неудаляемыми. Но это прямо противоречит праву на удаление персональных данных (ст. 152-ФЗ) и праву на забвение: как «забыть» данные, которые технически невозможно изменить или удалить?</p>
+      </div>
+
+      <div class="card warning">
+        <h3>Противоречие 3: ИБ vs. Законодательство о ПД</h3>
+        <p>Требования информационной безопасности (распределённость, избыточность, криптостойкость) вступают в прямой конфликт с законодательством о персональных данных (локализация ПД, ограничение доступа, право на забвение). Технологии и право движутся с разной скоростью, и нормативная база не успевает за технологиями.</p>
+      </div>
+
+      <details class="details">
+        <summary class="details-summary">Пример: современные технологии и персональные данные</summary>
+        <div class="details-content">
+          <table class="info-table">
+            <thead><tr><th>Технология</th><th>Какие ПДн затрагивает</th></tr></thead>
+            <tbody>
+              <tr><td>Машинное обучение / ИИ</td><td>Извлечение ПД из неструктурированных данных</td></tr>
+              <tr><td>Смарт-контракты</td><td>Данные участников и их действий (неудаляемые)</td></tr>
+              <tr><td>IoT (Интернет вещей)</td><td>Данные владельцев и их окружения</td></tr>
+              <tr><td>Телемедицина</td><td>Медицинские сведения пациента</td></tr>
+              <tr><td>Цифровая экономика</td><td>Финансовая активность цифрового двойника</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- QUIZ 1 -->
+      <div class="quiz" id="quiz1">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Выбор в условиях противоречия</h3>
+        <div class="quiz-scenario">
+          Вы — руководитель юридического отдела. Компания хранит персональные данные клиентов. После серии утечек в отрасли совет директоров предлагает перенести все данные в распределённое облачное хранилище с дублированием на 5 серверах в разных юрисдикциях. Что вы порекомендуете?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz1')">
+            <span class="opt-letter">A</span>
+            <span>Полностью согласиться: распределённость обеспечит целостность и доступность — главные приоритеты</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz1')">
+            <span class="opt-letter">B</span>
+            <span>Категорически отказаться: конфиденциальность важнее, данные должны храниться на одном сервере</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="nuance" onclick="selectOption(this, 'quiz1')">
+            <span class="opt-letter">C</span>
+            <span>Предложить компромисс: разделить данные по категориям, для каждой выбрать свой баланс между доступностью и конфиденциальностью, учесть требования 152-ФЗ о локализации</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz1')">
+            <span class="opt-letter">D</span>
+            <span>Передать вопрос ИТ-отделу — это техническое решение, юридический аспект вторичен</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz1-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: УГРОЗЫ ===== -->
+  <div class="section" id="section-3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">3</span>
+      <h2 class="section-title">Угрозы и уязвимости</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="card highlight">
+        <h3>Ключевые определения</h3>
+        <table class="info-table">
+          <thead><tr><th>Понятие</th><th>Определение</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Уязвимость</strong></td><td>Любая характеристика или элемент системы, использование которой нарушителем может привести к реализации угрозы</td></tr>
+            <tr><td><strong>Атака</strong></td><td>Любое действие нарушителя для реализации угрозы путём использования уязвимостей</td></tr>
+            <tr><td><strong>Защищённость</strong></td><td>Состояние, при котором все три цели ИБ обеспечены на допустимом уровне</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Основные причины нарушения безопасности</h3>
+        <ul>
+          <li><strong>Ошибки в программном и аппаратном обеспечении</strong> — уязвимости нулевого дня, баги в библиотеках, просчёты в архитектуре</li>
+          <li><strong>Низкая квалификация пользователя</strong> — слабые пароли, игнорирование обновлений, передача данных по незащищённым каналам</li>
+          <li><strong>Непредумышленные действия</strong> — случайная отправка файла не тому адресату, случайное удаление, ошибочная настройка прав доступа</li>
+          <li><strong>Умышленные действия злоумышленника</strong> — целенаправленная атака с использованием социальной инженерии, вредоносного ПО, эксплуатации уязвимостей</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Категории нарушения безопасности</h3>
+        <table class="info-table">
+          <thead><tr><th>Категория</th><th>Описание</th><th>Пример</th></tr></thead>
+          <tbody>
+            <tr><td>Перехват информации</td><td>Несанкционированное получение данных</td><td>Перехват трафика в открытой Wi-Fi-сети</td></tr>
+            <tr><td>Несанкционированный доступ</td><td>Доступ без полномочий</td><td>Подбор пароля к учётной записи</td></tr>
+            <tr><td>Нарушение целостности</td><td>Несанкционированное изменение данных</td><td>Модификация реквизитов договора</td></tr>
+            <tr><td>Отказ в обслуживании</td><td>Блокировка доступа легитимным пользователям</td><td>DDoS-атака на сервер организации</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- QUIZ 2 -->
+      <div class="quiz" id="quiz2">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Классификация инцидента</h3>
+        <div class="quiz-scenario">
+          Сотрудник юридической фирмы получил письмо от «коллеги из партнёрской организации» с просьбой срочно переслать копию договора. Он переслал документ, не проверив адрес отправителя. Оказалось, письмо пришло с подменённого адреса. К какому типу относится этот инцидент?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz2')">
+            <span class="opt-letter">A</span>
+            <span>Непредумышленные действия — сотрудник не хотел вредить</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz2')">
+            <span class="opt-letter">B</span>
+            <span>Умышленные действия злоумышленника — атака использовала уязвимость (доверие сотрудника) для перехвата информации</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz2')">
+            <span class="opt-letter">C</span>
+            <span>Ошибка в ПО — почтовый клиент не распознал подмену</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz2')">
+            <span class="opt-letter">D</span>
+            <span>Нарушение целостности — данные были изменены</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz2-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: ЛОГИКА ЗЛОУМЫШЛЕННИКА ===== -->
+  <div class="section" id="section-4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">4</span>
+      <h2 class="section-title">Логика злоумышленника</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="card danger">
+        <h3>Стратегия: минимум усилий — максимум жертв</h3>
+        <p>Злоумышленник действует рационально. Его стратегия — за минимум усилий атаковать большинство жертв. Автоматизация снижает стоимость одной атаки до копеек, а адаптивность позволяет подобрать оптимальную схему. В интернете жертвой является <strong>любой</strong> пользователь — атакуют незнакомцев массово, подстраиваясь под психологию и поведение большинства.</p>
+        <p><strong>Вывод:</strong> если перестать быть большинством (вести себя нетипично), вероятность воздействия уменьшается — но не исчезает полностью.</p>
+      </div>
+
+      <details class="details">
+        <summary class="details-summary">Человеческий фактор: на что рассчитывает злоумышленник</summary>
+        <div class="details-content">
+          <ul>
+            <li><strong>Страх</strong> — потерять, пропустить, проиграть, уступить в социальном плане. «Ваш аккаунт будет заблокирован через 24 часа!» — нажимайте срочно.</li>
+            <li><strong>Доверие</strong> — позитивное мышление, желание помочь близким. «Мама, я попал в аварию, срочно переведи деньги» — и люди переводят.</li>
+            <li><strong>Самоуверенность</strong> — «со мной такого не случится». Именно такие люди реже проверяют ссылки и обновляют пароли.</li>
+            <li><strong>Утомлённость</strong> — к концу рабочего дня внимание падает, бдительность снижается, шанс ошибиться растёт.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details">
+        <summary class="details-summary">Технологический и правовой факторы</summary>
+        <div class="details-content">
+          <p><strong>Технологический фактор:</strong></p>
+          <ul>
+            <li>Ошибки в оборудовании, ПО и конфигурации (уязвимости есть всегда)</li>
+            <li>Низкая стоимость эксплуатации технических средств для атаки (инструменты доступны)</li>
+          </ul>
+          <p><strong>Правовой фактор:</strong></p>
+          <ul>
+            <li>Уход от ответственности по причине разных юрисдикций — атакующий в стране А, жертва в стране Б</li>
+            <li>Несовершенство нормативной базы и протоколов реагирования</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="details">
+        <summary class="details-summary">Средства злоумышленника: обнаружение, манипулирование, воздействие</summary>
+        <div class="details-content">
+          <table class="info-table">
+            <thead><tr><th>Категория</th><th>Инструменты</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Обнаружение</strong></td><td>Сканеры и снифферы, парсеры открытых источников (OSINT), подделка беспроводных сетей</td></tr>
+              <tr><td><strong>Манипулирование</strong></td><td>Звонки, СМС, письма, сообщения в мессенджерах и соцсетях, коммуникация в сервисах (Avito и др.), комментарии</td></tr>
+              <tr><td><strong>Воздействие</strong></td><td>Зловредное ПО, физический захват телефона, доступ к окружению (незаметно для пользователя)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- INTERACTIVE ATTACKER CASE -->
+      <div class="attacker-case" id="attackerCase">
+        <h3>&#128065; Глазами злоумышленника</h3>
+        <p class="ac-subtitle">Пройдите шаги атаки и посмотрите, как злоумышленник видит свою жертву</p>
+
+        <div class="attacker-profile">
+          <h4>&#128083; Профиль жертвы (то, что видит злоумышленник)</h4>
+          <p>Вы — юрист, 35 лет. Ведёте аккаунты в двух соцсетях, используете мессенджер для работы, онлайн-банк, портал Госуслуг. Ваш телефон всегда под рукой. Пароль от рабочего аккаунта — имя питомца + год рождения.</p>
+        </div>
+
+        <div class="attacker-steps" id="attackerSteps">
+          <div class="attacker-step" onclick="toggleAttackerStep(this)">
+            <span class="step-num">1</span>
+            <div>
+              <div class="step-text"><strong>Разведка.</strong> Нахожу вас через открытые источники</div>
+              <div class="step-detail">Ваши соцсети открыты. Я вижу: место работы, фото питомца, дату рождения, список друзей, где вы отдыхали. Инструмент типа Sherlock (GitHub) за секунды находит все ваши аккаунты по имени пользователя. Из этого уже можно составить профиль: пароль, скорее всего, кличка питомца + год рождения. Уязвимость: избыточная открытость.</div>
+            </div>
+          </div>
+          <div class="attacker-step" onclick="toggleAttackerStep(this)">
+            <span class="step-num">2</span>
+            <div>
+              <div class="step-text"><strong>Выбор вектора.</strong> Определяю точку входа</div>
+              <div class="step-detail">Вы юрист — значит, часто работаете с документами и почтой. Фишинговое письмо с юридической тематикой — самый верный способ. Тема: «Претензия от контрагента — срочно» или «Изменение в законодательстве — важное уведомление». Уязвимость: привычка реагировать на срочные рабочие письма без проверки.</div>
+            </div>
+          </div>
+          <div class="attacker-step" onclick="toggleAttackerStep(this)">
+            <span class="step-num">3</span>
+            <div>
+              <div class="step-text"><strong>Воздействие.</strong> Отправляю фишинговое письмо</div>
+              <div class="step-detail">Письмо выглядит как настоящее: логотип, корпоративный стиль, ссылка «открыть документ». Ссылка ведёт на страницу, идентичную входу в вашу рабочую почту. Вы вводите логин и пароль — они у меня. Если подключена двухфакторная аутентификация, я попрошу «подтвердить через Госуслуги» — и выведу код на фишинговую страницу. Уязвимость: доверие к визуальному оформлению.</div>
+            </div>
+          </div>
+          <div class="attacker-step" onclick="toggleAttackerStep(this)">
+            <span class="step-num">4</span>
+            <div>
+              <div class="step-text"><strong>Развитие.</strong> Использую полученный доступ</div>
+              <div class="step-detail">С вашими учётными данными я вхожу в рабочую почту. Теперь я: читаю переписку с клиентами (коммерческая тайна), нахожу контакты коллег для следующих атак, могу отправить письмо от вашего имени с вредоносным вложением — ваши коллеги откроют, потому что доверяют вам. Одна compromises-точка — и вся цепочка под угрозой. Уязвимость: единая точка отказа и отсутствие Zero Trust.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="attacker-reflection">
+          <h4>&#128161; Рефлексия</h4>
+          <p>На каждом шаге злоумышленник эксплуатирует не «слабость технологии», а <strong>предсказуемость поведения</strong>. Открытый профиль, предсказуемый пароль, привычка реагировать на срочные письма, отсутствие многофакторной аутентификации или доверие к визуальному оформлению — это не технические, а поведенческие уязвимости. Перестаньте быть предсказуемыми — и вы перестанете быть лёгкой мишенью.</p>
+        </div>
+      </div>
+
+      <!-- QUIZ 3 -->
+      <div class="quiz" id="quiz3">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Сложный выбор: что бы сделал злоумышленник?</h3>
+        <div class="quiz-scenario">
+          Вы узнали, что на рынке появилась база данных с утечкой паролей, включающая и ваш рабочий аккаунт. Ваш пароль был уникальным, но простым. Двухфакторная аутентификация не подключена. Что вы сделаете <strong>в первую очередь</strong>?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz3')">
+            <span class="opt-letter">A</span>
+            <span>Ничего: мой пароль был уникальным, значит другие аккаунты в безопасности</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz3')">
+            <span class="opt-letter">B</span>
+            <span>Немедленно сменить пароль на всех аккаунтах</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz3')">
+            <span class="opt-letter">C</span>
+            <span>Немедленно сменить пароль на уязвимом аккаунте и подключить двухфакторную аутентификацию — приоритет: заблокировать точку входа</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz3')">
+            <span class="opt-letter">D</span>
+            <span>Обратиться в техподдержку с просьбой удалить мой аккаунт из базы утечек</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz3-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: ВЕКТОРЫ АТАК ===== -->
+  <div class="section" id="section-5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">5</span>
+      <h2 class="section-title">Векторы атак</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="card danger">
+        <h3>Фишинг</h3>
+        <p>Фишинг — самый массовый вектор атак, использующий социальную инженерию. Злоумышленник маскируется под доверенный источник, чтобы побудить жертву раскрыть данные или совершить опасное действие.</p>
+        <details class="details">
+          <summary class="details-summary">Виды фишинга</summary>
+          <div class="details-content">
+            <ul>
+              <li><strong>Фишинговые сайты</strong> — копии банков, госуслуг, почтовых сервисов. Отличаются одной буквой в адресе (guslugi.ru вместо gosuslugi.ru).</li>
+              <li><strong>Фишинговые письма и сообщения</strong> — от «фейков» в мессенджерах: поддельные аккаунты клиентов, руководителей, коллег.</li>
+              <li><strong>Фишинговые мобильные приложения</strong> — копии банковских приложений в неофициальных магазинах.</li>
+              <li><strong>Фишинг как обход MFA</strong> — запрос входа через «Госуслуги», фишинговая страница собирает и пароль, и одноразовый код.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="details">
+          <summary class="details-summary">Как противостоять фишингу</summary>
+          <div class="details-content">
+            <ul>
+              <li><strong>Не переходите по ссылкам</strong> — желание сделать что-то быстро и удобно — это то, на что рассчитывает злоумышленник. Набирайте адрес вручную.</li>
+              <li><strong>Не переходите по рекламным объявлениям в поисковой выдаче</strong> — реклама может вести на фишинговый сайт.</li>
+              <li><strong>Свяжитесь с отправителем по официальным каналам</strong> — перезвоните, уточните, было ли сообщение. Заодно откажитесь от ненужных рассылок.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="card danger">
+        <h3>Фарминг</h3>
+        <p>Фарминг — скрытое перенаправление жертвы на поддельный сайт без её ведома. В отличие от фишинга, жертва даже не нажимает подозрительную ссылку: она набирает правильный адрес, но зловредное ПО на устройстве перенаправляет трафик.</p>
+        <details class="details">
+          <summary class="details-summary">Сценарий фарминг-атаки</summary>
+          <div class="details-content">
+            <ol>
+              <li>Вы набираете корзину в интернет-магазине</li>
+              <li>Переходите к оплате</li>
+              <li>Оплачиваете</li>
+              <li>Подвох: из-за зловредного ПО оплата уходит злоумышленнику, а не магазину</li>
+            </ol>
+            <p><strong>Усугубление:</strong> в ряде случаев злоумышленники подделывают магазины целиком — от каталога до «доставки».</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="card highlight">
+        <h3>Мессенджеры как канал воздействия</h3>
+        <details class="details">
+          <summary class="details-summary">Опасности мессенджеров</summary>
+          <div class="details-content">
+            <ul>
+              <li><strong>Подделка аккаунтов</strong> — клонирование профиля знакомого для мошенничества</li>
+              <li><strong>Взлом пабликов</strong> — от имени автора канала публикуется запрос о донате</li>
+              <li><strong>Боты-сборщики данных</strong> — «проверьте утечку ПД» — и вы передаёте свои данные боту</li>
+              <li><strong>Чатботы с ИИ</strong> — мотивируют передавать документы и фото «для интеллектуальной обработки»</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <!-- QUIZ 4 -->
+      <div class="quiz" id="quiz4">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Фишинг или нет?</h3>
+        <div class="quiz-scenario">
+          Вы получили СМС от «Сбера»: «Ваш аккаунт будет заблокирован через 2 часа. Подтвердите данные: https://sber-secure-verification.ru/login». Вы пользуетесь услугами Сбера. Ваши действия?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz4')">
+            <span class="opt-letter">A</span>
+            <span>Перейду по ссылке — лучше перестраховаться, блокировка аккаунта хуже</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz4')">
+            <span class="opt-letter">B</span>
+            <span>Не перейду. Открою приложение Сбера вручную или наберу адрес online.sberbank.ru — проверю статус аккаунта самостоятельно</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz4')">
+            <span class="opt-letter">C</span>
+            <span>Перейду с другого устройства — на всякий случай</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz4')">
+            <span class="opt-letter">D</span>
+            <span>Проигнорирую полностью — это точно мошенники</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz4-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6: АНОНИМНОСТЬ ===== -->
+  <div class="section" id="section-6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">6</span>
+      <h2 class="section-title">Анонимность: миф и реальность</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card danger">
+        <h3>VPN как приманка</h3>
+        <p>Средства анонимизации (в частности, бесплатные VPN-сервисы) используются злоумышленниками как приманка и средство кражи передаваемых данных, включая ключи шифрования и учётные данные. Бесплатный VPN «защищает» ваш трафик — но от кого? От всех, кроме самого провайдера VPN, который видит всё.</p>
+      </div>
+      <div class="card warning">
+        <h3>Анонимность декларируется, но не обеспечивается</h3>
+        <p>Даже платные и технически надёжные сервисы не дают гарантии анонимности: метаданные (время соединения, объём трафика, DNS-запросы) позволяют деанонимизировать пользователя. А «бесплатные» сервисы — это почти всегда коммерческий проект по продаже данных пользователей.</p>
+      </div>
+      <details class="details">
+        <summary class="details-summary">Сценарий: шантаж под предлогом анонимности</summary>
+        <div class="details-content">
+          <p>Пользователь использует «анонимный» VPN для доступа к ресурсам. Провайдер VPN собирает данные о его активности. Позже эти данные используются для шантажа: «Вы посещали [ресурс]. Оплатите, иначе мы сообщим [кому-либо]». Пользователь думал, что он анонимен, а на самом деле его цифровой след сохранён и используется против него.</p>
+        </div>
+      </details>
+
+      <!-- QUIZ 5 -->
+      <div class="quiz" id="quiz5">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Выбор VPN-сервиса</h3>
+        <div class="quiz-scenario">
+          Вам нужен VPN для работы с зарубежными правовыми базами данных. Коллега рекомендует бесплатный VPN с хорошей скоростью и «без логов». Стоит ли использовать?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz5')">
+            <span class="opt-letter">A</span>
+            <span>Да — «без логов» означает, что данные не сохраняются</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz5')">
+            <span class="opt-letter">B</span>
+            <span>Нет — «без логов» ничем не гарантировано, бесплатный VPN зарабатывает на данных пользователей. Выбрать платный сервис с независимым аудитом</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz5')">
+            <span class="opt-letter">C</span>
+            <span>Использовать, но только для правовых баз, не вводить пароли</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz5-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7: ИИ ===== -->
+  <div class="section" id="section-7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">7</span>
+      <h2 class="section-title">ИИ как новое оружие злоумышленников</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card danger">
+        <h3>Дипфейки</h3>
+        <p>Технологии синтеза голоса и внешности (включая видео) достигли уровня, на котором отличить подделку от реальности без специальных инструментов практически невозможно. Звонок от «руководителя» с его голосом, видеообращение «коллеги» — это уже реальность атак. Для юристов это особенно опасно: голосовые инструкции могут быть основанием для действий с правовыми последствиями.</p>
+      </div>
+      <div class="card warning">
+        <h3>Персонализация и автоматизация атак с помощью LLM</h3>
+        <p>Большие языковые модели позволяют автоматизировать и персонализировать диалоги с жертвами. Раньше фишинговое письмо было шаблонным — теперь ИИ может вести осмысленную переписку от имени вашего банка, коллеги или контрагента, адаптируясь к вашим ответам в реальном времени. Атака становится «разговорной», а не «письменной».</p>
+      </div>
+      <div class="card warning">
+        <h3>Сбор данных через чатботы и сервисы ИИ</h3>
+        <p>Пользователи добровольно передают чатботам и сервисам на базе ИИ свои документы, фотографии, персональные данные — для «интеллектуальной обработки». Аналогия с VPN: вы доверяете свои данные третьей стороне, чьи реальные цели могут не совпадать с заявленными.</p>
+      </div>
+
+      <!-- QUIZ 6 -->
+      <div class="quiz" id="quiz6">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Дипфейк или реальность?</h3>
+        <div class="quiz-scenario">
+          Вы получаете видеозвонок от «генерального директора» в нерабочее время. Он просит срочно перевести крупную сумму на указанный счёт, ссылаясь на критическую ситуацию. Лицо и голос похожи на реальные. Ваши действия?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz6')">
+            <span class="opt-letter">A</span>
+            <span>Выполню — ситуация критическая, а голос и лицо подтверждают личность</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz6')">
+            <span class="opt-letter">B</span>
+            <span>Не выполню. Перебью звонок и свяжусь с руководителем по известному рабочему номеру — независимо подтвердю поручение</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz6')">
+            <span class="opt-letter">C</span>
+            <span>Задам контрольный вопрос, который знает только руководитель</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz6-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8: ПЕРЕСТАЁМ БЫТЬ БОЛЬШИНСТВОМ ===== -->
+  <div class="section" id="section-8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">8</span>
+      <h2 class="section-title">Перестаём быть большинством</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card highlight">
+        <h3>Человеческий фактор: контрмеры</h3>
+        <ul>
+          <li><strong>Саморефлексия и критическое мышление</strong> — прежде чем реагировать на «срочное» сообщение, спросите себя: «Кому выгодна моя поспешность?»</li>
+          <li><strong>Внимание против самоуверенности</strong> — не думайте «со мной такого не случится». Именно так думает большинство — и именно поэтому большинство — жертва.</li>
+          <li><strong>Укрепляем окружение</strong> — улучшаем защиту близких. Защита слабого звена в вашем окружении — защита вас.</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h3>Технологический фактор: контрмеры</h3>
+        <ul>
+          <li><strong>Обновления</strong> — регулярная проверка и установка обновлений оборудования и ПО. Устаревшее ПО — открытая дверь.</li>
+          <li><strong>Технические средства защиты</strong> — антивирус, сетевой экран, приватный режим — минимальный набор.</li>
+          <li><strong>Соблюдение норм и правил</strong> — корпоративные политики безопасности существуют не для бюрократии, а для защиты.</li>
+        </ul>
+      </div>
+      <div class="card highlight">
+        <h3>Правовой фактор: контрмеры</h3>
+        <ul>
+          <li><strong>Информирование</strong> — сообщайте специалистам и органам об инцидентах. Молчание — лучшая среда для злоумышленников.</li>
+        </ul>
+      </div>
+
+      <!-- QUIZ 7 -->
+      <div class="quiz" id="quiz7">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Информационная гигиена</h3>
+        <div class="quiz-scenario">
+          Вы замечаете, что проводите в соцсетях по 2 часа в день, «листая ленту». Информации много, но пользы мало. Какой подход наиболее соответствует принципам информационной гигиены?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz7')">
+            <span class="opt-letter">A</span>
+            <span>Удалить все соцсети — радикальное решение</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz7')">
+            <span class="opt-letter">B</span>
+            <span>Определить цель использования, нормировать объём, фильтровать источники, заменить случайную ленту на тематические подписки</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz7')">
+            <span class="opt-letter">C</span>
+            <span>Подписаться на каналы по кибербезопасности — так лента станет полезной</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz7-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 9: ТЕХНИЧЕСКИЕ СРЕДСТВА ===== -->
+  <div class="section" id="section-9">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">9</span>
+      <h2 class="section-title">Технические средства защиты</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card highlight">
+        <h3>Минимальный набор средств защиты</h3>
+        <table class="info-table">
+          <thead><tr><th>Средство</th><th>Зачем</th><th>Нюанс</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Приватный режим браузера</strong></td><td>Не сохраняет куки, историю, пароли</td><td>Не скрывает трафик от провайдера</td></tr>
+            <tr><td><strong>Мобильные приложения вместо сайтов</strong></td><td>Приложения онлайн-банков проверяются магазинами, труднее подделать</td><td>Скачивайте только из официальных магазинов</td></tr>
+            <tr><td><strong>Менеджер паролей</strong></td><td>Уникальный сложный пароль для каждого сервиса</td><td>Главный пароль — единственный, который нужно запомнить</td></tr>
+            <tr><td><strong>Многофакторная аутентификация</strong></td><td>Даже при утечке пароля аккаунт защищён</td><td>SMS-коды — самый слабый вариант; аппаратные ключи — самые надёжные</td></tr>
+            <tr><td><strong>Антивирус и сетевой экран</strong></td><td>Базовая защита от зловредного ПО и сетевых атак</td><td>Обязательно обновляйте сигнатуры</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="details">
+        <summary class="details-summary">Почему SMS-коды — слабый фактор аутентификации?</summary>
+        <div class="details-content">
+          <p>SMS-коды уязвимы для перехвата: подмена SIM-карты (SIM-swap), перехват через SS7-уязвимости, фишинговые страницы, запрашивающие код. Аппаратные ключи (YubiKey и аналоги) или приложения-аутентификаторы (Google Authenticator, Authy) надёжнее — они не зависят от сотовой сети и не могут быть перехвачены удалённо.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 10: БЛИЗКИЕ ===== -->
+  <div class="section" id="section-10">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">10</span>
+      <h2 class="section-title">Близкие — наша брешь и наш бастион</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card warning">
+        <h3>Дети — уязвимое звено</h3>
+        <p>Дети не знают об атаках так же, как не знают о болезнях. Проблемы в виртуальном мире для них кажутся «виртуальными» — нереальными. Дети не обращаются за помощью, если не чувствуют поддержки или боятся наказания за ошибку. Если ваша цель — «обеспечить безопасность ребёнка», вы автоматически повысите и свою безопасность.</p>
+      </div>
+      <div class="card highlight">
+        <h3>Старшее поколение</h3>
+        <p>Старшее поколение нуждается в помощи с освоением новых сервисов и средств. Мошенники активно эксплуатируют их неуверенность: «Ваш счёт заблокирован, назовите код из СМС» — и бабушка называет, потому что боится потерять пенсию. Обучение близких — инвестиция в общую безопасность.</p>
+      </div>
+      <details class="details">
+        <summary class="details-summary">Практические рекомендации</summary>
+        <div class="details-content">
+          <ul>
+            <li><strong>Избирательность в интернет-связях</strong> — отказ от излишней коммуникации, публичного профиля</li>
+            <li><strong>Запрет на использование адресной книги</strong> — мессенджеры запрашивают доступ к контактам, что создаёт цепочку утечки</li>
+            <li><strong>Закрытие публичного доступа к профилю</strong> — ограничьте видимость для незнакомых людей</li>
+            <li><strong>Разговор с детьми</strong> — не наказывайте за ошибку, помогите. Установите правило: «Если что-то странное — сразу ко мне»</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 11: ZERO TRUST ===== -->
+  <div class="section" id="section-11">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">11</span>
+      <h2 class="section-title">Zero Trust для всех</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="card highlight">
+        <h3>Концепция нулевого доверия</h3>
+        <p>Отраслевая концепция Zero Trust («нулевое доверие») полезна не только корпорациям, но и обычным пользователям. Суть: никто и ничто не заслуживает доверия по умолчанию — каждый запрос на доступ должен быть верифицирован.</p>
+      </div>
+      <div class="card">
+        <h3>Zero Trust для обычного пользователя</h3>
+        <table class="info-table">
+          <thead><tr><th>Принцип</th><th>Как применить</th></tr></thead>
+          <tbody>
+            <tr><td>Представьте себя предприятием</td><td>Вы — владелец ресурсов (данных, аккаунтов, устройств). Все остальные — потенциальные пользователи</td></tr>
+            <tr><td>Строгий минимум доступа</td><td>Определите, кто действительно должен иметь доступ к вашим данным. Не предоставляйте доступ «на всякий случай»</td></tr>
+            <tr><td>Надёжные средства доступа</td><td>Используйте общий секрет (менеджер паролей), многофакторную аутентификацию, аппаратные ключи</td></tr>
+            <tr><td>Мониторинг активности</td><td>Проверяйте активные сеансы, авторизованные устройства, историю входов</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="details">
+        <summary class="details-summary">Отработка сценариев реагирования</summary>
+        <div class="details-content">
+          <p>Представьте: вы потеряли телефон. Что вы будете делать?</p>
+          <ol>
+            <li>Заблокировать SIM-карту (позвонить оператору с другого телефона)</li>
+            <li>Удалённо заблокировать устройство (через «Найти устройство» Google/Apple)</li>
+            <li>Сменить пароли критичных аккаунтов (почта, банк, мессенджеры) с другого устройства</li>
+            <li>Отозвать авторизованные сеансы</li>
+            <li>Сообщить близким о компрометации мессенджера</li>
+            <li>При необходимости — подать заявление в полицию</li>
+          </ol>
+          <p><strong>Подготовьте этот план заранее</strong> — в момент потери будет не до раздумий.</p>
+        </div>
+      </details>
+
+      <!-- QUIZ 8 -->
+      <div class="quiz" id="quiz8">
+        <div class="quiz-header"><span class="quiz-badge">&#9881; Кейс</span></div>
+        <h3>Zero Trust в быту</h3>
+        <div class="quiz-scenario">
+          Ваш коллега просит доступ к вашей корпоративной учётной записи «на минутку — срочно нужно отправить документ, а мой аккаунт заблокирован». Он — надёжный человек, вы ему доверяете. Что делать по принципу Zero Trust?
+        </div>
+        <div class="quiz-options">
+          <div class="quiz-option" data-correct="false" data-feedback-type="wrong" onclick="selectOption(this, 'quiz8')">
+            <span class="opt-letter">A</span>
+            <span>Дам доступ — коллеге нужно помочь, а я ему доверяю</span>
+          </div>
+          <div class="quiz-option" data-correct="true" data-feedback-type="correct" onclick="selectOption(this, 'quiz8')">
+            <span class="opt-letter">B</span>
+            <span>Не дам доступ. Помогу по-другому: отправлю документ сам с его текстом или направлю в ИТ-отдел для разблокировки его аккаунта</span>
+          </div>
+          <div class="quiz-option" data-correct="false" data-feedback-type="nuance" onclick="selectOption(this, 'quiz8')">
+            <span class="opt-letter">C</span>
+            <span>Дам доступ, но сразу сменю пароль после</span>
+          </div>
+        </div>
+        <div class="quiz-feedback" id="quiz8-fb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 12: РЕСУРСЫ ===== -->
+  <div class="section" id="section-12">
+    <div class="section-header" onclick="toggleSection(this)">
+      <span class="section-num">12</span>
+      <h2 class="section-title">Рекомендуемые ресурсы</h2>
+      <span class="section-toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <ol class="resource-list">
+        <li>Книга «Цифровая гигиена», Игорь Ашманов, Наталья Касперская, 2022, ISBN: 978-5-4461-1938-7</li>
+        <li>Кибербезопасность: онлайн-лекция</li>
+        <li>Раздел на сайте Сбера: Киберзащита для всей семьи</li>
+        <li>Яндекс DNS: быстрый и безопасный домашний интернет</li>
+        <li>Видео: Техника безопасности в интернете, как бороться с кибератаками</li>
+        <li>Видеоуроки от Киберпроект</li>
+        <li>Курс для образовательных учреждений от Киберпроект (требуется регистрация)</li>
+        <li>Видео: Мастер-класс по цифровой гигиене — навыку безопасного и рационального поведения в сети (ведущий: Игорь Ашманов)</li>
+        <li>Примеры социальной инженерии: «Социальная инженерия глазами жертвы»</li>
+        <li>Пример плана: Что делать, если потерял телефон?</li>
+        <li>Концепция безопасности Zero Trust: преимущества и принцип работы</li>
+      </ol>
+      <div class="card" style="margin-top: 24px; text-align: center; background: var(--accent-bg);">
+        <p style="font-size: 1rem; font-weight: 600; color: #1a5c56;">Автор курса: Севрюков С.Ю., СПбГУ &middot; s.sevryukov@spbu.ru</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- Back to top -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Наверх">&#8593;</button>
+
+<script>
+// ===== SIDEBAR NAVIGATION =====
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.querySelectorAll('.sidebar-nav a');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+});
+
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  });
+});
+
+// ===== ACTIVE NAV TRACKING =====
+const sections = document.querySelectorAll('.section, .hero');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.sidebar-nav a[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// ===== PROGRESS BAR =====
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressFill').style.width = progress + '%';
+
+  // Back to top
+  const btn = document.getElementById('backTop');
+  btn.style.display = scrollTop > 400 ? 'flex' : 'none';
+});
+
+// ===== SECTION TOGGLE =====
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const isCollapsed = body.classList.contains('collapsed');
+
+  if (isCollapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    header.classList.remove('collapsed');
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 500);
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.style.maxHeight = '0px';
+      body.classList.add('collapsed');
+      header.classList.add('collapsed');
+    });
+  }
+}
+
+// ===== QUIZ LOGIC =====
+let totalScore = 0;
+
+const feedbackTexts = {
+  quiz1: {
+    correct: 'Верно! Абсолютной защиты не существует — можно лишь выбирать компромисс. Разделение данных по категориям критичности с разными режимами хранения и учётом требований 152-ФЗ — профессиональный подход юриста к проблеме противоречия целей ИБ.',
+    wrong: 'Неверно. Ни одна из крайностей (полная распределённость или полная изоляция) не решает проблему. Вариант А игнорирует конфиденциальность и требования локализации ПД, вариант Б — доступность и целостность. Правильный подход — категоризация данных и компромисс для каждой категории.',
+    nuance: 'Частично верно, но вы выбрали лучший из вариантов. Проблема не имеет «чистого» решения — только осознанный компромисс с учётом всех трёх целей ИБ и законодательства.'
+  },
+  quiz2: {
+    correct: 'Верно! Хотя сотрудник действовал непредумышленно, сам инцидент является результатом умышленных действий злоумышленника, использовавшего социальную инженерию для перехвата информации. Классификация: перехват информации + несанкционированный доступ.',
+    wrong: 'Неверно. Хотя сотрудник не хотел вредить, ключевая причина инцидента — целенаправленная атака злоумышленника (фишинг). Это умышленное действие, использующее уязвимость (человеческое доверие).',
+    nuance: ''
+  },
+  quiz3: {
+    correct: 'Верно! Приоритет — заблокировать точку входа: сменить пароль на скомпрометированном аккаунте и подключить MFA. Смена паролей на всех аккаунтах — тоже важно, но вторично по отношению к немедленной блокировке известной уязвимости.',
+    wrong: 'Неверно. Уникальность пароля не спасает, если он уже в базе утечек — злоумышленник может попробовать его прямо сейчас. Нужно действовать немедленно.',
+    nuance: 'Смена паролей на всех аккаунтах — правильная мысль, но не первый приоритет. Сначала заблокируйте известную брешь (скомпрометированный аккаунт + MFA), затем обновите остальные.'
+  },
+  quiz4: {
+    correct: 'Верно! Домен sber-secure-verification.ru — не официальный домен Сбера. Никогда не переходите по ссылкам из СМС/писем — откройте приложение или наберите адрес вручную. Это базовое правило против фишинга.',
+    wrong: 'Неверно. Переход по ссылке из СМС — именно то, на что рассчитывает злоумышленник. Ссылка ведёт на фишинговый сайт, даже если вы «знаете» о фишинге.',
+    nuance: 'Переход с другого устройства не защищает от фишинга — вы всё равно попадёте на поддельный сайт и введёте данные. Единственный надёжный способ — не переходить по ссылке и проверить статус самостоятельно.'
+  },
+  quiz5: {
+    correct: 'Верно! «Без логов» — заявление провайдера, не гарантия. Бесплатный VPN зарабатывает на данных пользователей. Только платный сервис с независимым аудитом и прозрачной политикой приватности заслуживает минимального доверия.',
+    wrong: 'Неверно. Заявление «без логов» ничем не гарантировано и не проверяемо. История полна случаев, когда VPN-сервисы, заявлявшие «без логов», передавали данные правоохранительным органам или продавали их.',
+    nuance: 'Даже если вы не вводите пароли, VPN-провайдер видит DNS-запросы, объём трафика, время соединения — метаданные, достаточные для профилирования. Бесплатный VPN — всегда риск.'
+  },
+  quiz6: {
+    correct: 'Верно! Дипфейки уже позволяют convincingly подделывать голос и лицо. Единственная надёжная защита — независимая верификация по заранее известному каналу связи. Прервите звонок и наберите руководителя по рабочему номеру.',
+    wrong: 'Неверно. Голос и лицо — больше не гарантия личности. Дипфейки уже используются в реальных атаках для получения переводов.',
+    nuance: 'Контрольный вопрос — лучше, чем ничего, но ИИ может быть обучен на данных из соцсетей и знать ответы на «секретные» вопросы. Только независимый канал верификации надёжен.'
+  },
+  quiz7: {
+    correct: 'Верно! Информационная гигиена — это не радикальный отказ, а осознанное потребление: определить цель (зачем я здесь?), нормировать объём (сколько времени?), фильтровать источники (кого читаю?), заменить пассивное «листание» на активный поиск.',
+    wrong: 'Неверно. Радикальный отказ не формирует навык рационального потребления информации — он лишь откладывает проблему.',
+    nuance: 'Полезные подписки — это хорошо, но не решают проблему фрагментарности и пассивного потребления. Нужно менять саму модель взаимодействия с информацией.'
+  },
+  quiz8: {
+    correct: 'Верно! Zero Trust означает: никто не получает доступ по умолчанию, даже доверенные лица. Передача учётных данных нарушает сразу несколько принципов: вы теряете контроль над сеансом, не можете отследить действия, и если данные утечьут — ответственность ваша. Помогите другим путём.',
+    wrong: 'Неверно. Передача учётных данных — нарушение базового принципа Zero Trust. Вы теряете контроль над сеансом и не можете определить, кто именно выполнял действия.',
+    nuance: 'Смена пароля после — лучше, чем ничего, но не устраняет риск: за время доступа коллега мог скопировать данные, авторизовать другое устройство, изменить настройки. Zero Trust: не давайте доступ — помогите по-другому.'
+  }
+};
+
+function selectOption(opt, quizId) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelectorAll('.quiz-option');
+  const fbEl = document.getElementById(quizId + '-fb');
+
+  // Already answered
+  if (quiz.dataset.answered === 'true') return;
+  quiz.dataset.answered = 'true';
+
+  const isCorrect = opt.dataset.correct === 'true';
+  const feedbackType = opt.dataset.feedbackType;
+
+  options.forEach(o => {
+    o.style.pointerEvents = 'none';
+    if (o === opt) {
+      o.classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+    if (o.dataset.correct === 'true' && o !== opt) {
+      o.classList.add('correct');
+    }
+  });
+
+  // Score
+  if (isCorrect) totalScore += 10;
+  document.getElementById('scoreVal').textContent = totalScore;
+
+  // Feedback
+  const texts = feedbackTexts[quizId];
+  let fbClass = '';
+  let fbText = '';
+
+  if (isCorrect) {
+    fbClass = 'correct-fb';
+    fbText = texts.correct || texts.nuance;
+  } else if (feedbackType === 'nuance') {
+    fbClass = 'nuance-fb';
+    fbText = texts.nuance;
+  } else {
+    fbClass = 'wrong-fb';
+    fbText = texts.wrong;
+  }
+
+  fbEl.className = 'quiz-feedback show ' + fbClass;
+  fbEl.textContent = fbText;
+}
+
+// ===== ATTACKER STEP TOGGLE =====
+function toggleAttackerStep(step) {
+  const wasActive = step.classList.contains('active');
+  document.querySelectorAll('.attacker-step').forEach(s => s.classList.remove('active'));
+  if (!wasActive) {
+    step.classList.add('active');
+  }
+}
+
+// ===== INIT: ensure sections are open =====
+document.querySelectorAll('.section-body').forEach(body => {
+  body.style.maxHeight = 'none';
+});
+</script>
+</body>
+</html>
