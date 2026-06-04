@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эволюция Искусственного Интеллекта - Интерактивная версия</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --col-1: #eef2f9; --col-2: #eaf6f6; --col-3: #eff6ee;
+            --col-4: #fdf5e6; --col-5: #fdf0ec; --col-6: #f4effa; --col-7: #efeffd;
+            --bg-main: #f8fafc;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --blue-accent: #334155;
+            --blue-hover: #1e293b;
+            --zoom-color: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            margin: 0; padding: 40px 20px;
+            font-size: 14px; line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px; margin: 0 auto;
+            background: #fff; padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+        }
+
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { color: var(--blue-accent); font-size: 32px; font-weight: 800; text-transform: uppercase; margin: 0 0 10px 0; }
+        .subtitle { color: var(--text-light); font-size: 15px; font-weight: 500; }
+        .hint { display: inline-flex; align-items: center; gap: 8px; background: #eff6ff; color: #1d4ed8; padding: 8px 16px; border-radius: 100px; font-size: 13px; font-weight: 600; margin-top: 20px; }
+
+        .table-wrapper { overflow-x: auto; padding-bottom: 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 200px repeat(7, minmax(160px, 1fr));
+            gap: 12px; min-width: 1200px;
+        }
+
+        /* Интерактивные заголовки (Zoomable) */
+        .zoomable {
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .zoomable::after {
+            content: 'Нажмите для деталей';
+            position: absolute;
+            top: -30px; left: 50%; transform: translateX(-50%);
+            background: var(--blue-accent); color: #fff;
+            padding: 4px 10px; border-radius: 6px; font-size: 11px;
+            opacity: 0; pointer-events: none; white-space: nowrap; transition: 0.2s;
+        }
+        .zoomable:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            border-color: var(--zoom-color);
+            z-index: 10;
+        }
+        .zoomable:hover::after { opacity: 1; top: -35px; }
+
+        /* Ячейки сетки */
+        .cell {
+            padding: 20px 15px;
+            border-radius: 12px; background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-weight: 600; font-size: 13px;
+            color: var(--text-dark);
+            transition: 0.3s;
+        }
+        .cell:hover { background: #f8fafc; }
+
+        /* Заголовки строк */
+        .row-header {
+            padding: 20px 15px;
+            border-radius: 12px;
+            display: flex; flex-direction: column; justify-content: center;
+            background: #f1f5f9;
+            font-weight: 700; color: var(--blue-accent);
+            text-transform: uppercase; font-size: 12px;
+        }
+        .row-header .sub { font-weight: 500; font-size: 11px; text-transform: none; color: var(--text-light); margin-top: 4px; }
+        .row-header .icon-wrapper { margin-bottom: 8px; color: var(--zoom-color); }
+
+        /* Заголовки колонок */
+        .col-header {
+            padding: 20px 10px;
+            border-radius: 16px;
+            text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        .col-header .step-num {
+            width: 30px; height: 30px; background: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 14px; margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .col-header h3 { margin: 0 0 8px 0; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+
+        /* Цвета */
+        .c1 { background-color: var(--col-1); }
+        .c2 { background-color: var(--col-2); }
+        .c3 { background-color: var(--col-3); }
+        .c4 { background-color: var(--col-4); }
+        .c5 { background-color: var(--col-5); }
+        .c6 { background-color: var(--col-6); }
+        .c7 { background-color: var(--col-7); }
+
+        /* Таймлайн */
+        .timeline-row {
+            grid-column: 1 / -1; display: grid; grid-template-columns: 200px repeat(7, minmax(160px, 1fr));
+            gap: 12px; position: relative; margin: 10px 0; height: 60px;
+        }
+        .timeline-line {
+            position: absolute; top: 15px; left: 220px; right: 80px;
+            height: 2px; background: var(--border-color); z-index: 1;
+        }
+        .timeline-line.dashed { left: auto; right: 0; width: 80px; background: none; border-bottom: 2px dashed var(--border-color); }
+        .t-point { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; margin-top: 10px; }
+        .t-dot { width: 12px; height: 12px; background: var(--blue-accent); border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px var(--border-color); }
+        .t-year { margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--text-light); }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: #fff; width: 100%; max-width: 1100px; max-height: 90vh;
+            border-radius: 24px; display: flex; flex-direction: column;
+            transform: translateY(20px) scale(0.98); transition: all 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); overflow: hidden;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        
+        .modal-header {
+            padding: 30px 40px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); background: #f8fafc;
+        }
+        .modal-header h2 { margin: 0; font-size: 24px; color: var(--blue-accent); }
+        .modal-header .years-badge { background: #e2e8f0; padding: 4px 12px; border-radius: 20px; font-size: 14px; margin-left: 15px; }
+        
+        .close-btn {
+            background: #e2e8f0; border: none; width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-dark); transition: 0.2s;
+        }
+        .close-btn:hover { background: #ef4444; color: #fff; transform: rotate(90deg); }
+
+        .modal-body { padding: 40px; overflow-y: auto; background: var(--bg-main); }
+        
+        /* Сетка внутри модалки */
+        .details-grid { display: grid; gap: 20px; }
+        .details-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+        .details-grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        
+        .detail-card {
+            background: #fff; padding: 25px; border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .detail-card h4 { margin: 0 0 15px 0; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .detail-card ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--text-dark); }
+        .detail-card ul li { margin-bottom: 8px; }
+
+        /* Подводка в модалке */
+        .modal-footer {
+            padding: 30px 40px; background: var(--blue-accent); color: white;
+            border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 15px;
+        }
+        .modal-external { background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .modal-conclusion { display: flex; align-items: center; gap: 20px; font-size: 15px; line-height: 1.6; }
+        .modal-conclusion i { flex-shrink: 0; color: #60a5fa; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Эволюция Искусственного Интеллекта</h1>
+        <div class="subtitle">Матрица развития ИИ: от правил к суперинтеллекту</div>
+        <div class="hint"><i data-lucide="zoom-in" width="18"></i> Кликайте по заголовкам колонок и строк, чтобы раскрыть подробности</div>
+    </header>
+
+    <div class="table-wrapper">
+        <div class="grid" id="main-grid">
+            <!-- Сетка генерируется через JS -->
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно (Зум) -->
+<div class="modal-overlay" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Заголовок</h2>
+            <button class="close-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <!-- Контент -->
+        </div>
+        <div class="modal-footer" id="modal-footer">
+            <!-- Подводка и выводы -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Полная база данных инфографики
+    const stages = [
+        {
+            id: 0, title: "Символьный ИИ", subtitle: "и экспертные системы", years: "1950–1980-е", yearPoint: "1950", colClass: "c1",
+            short: { tech: "Логика и правила", causes: "Математика и компьютеры", effects: "Формализация знаний", stoppers: "Хрупкость правил" },
+            details: {
+                tech: ["Логика и правила", "Экспертные системы", "Поиск и планирование", "Символьное представление знаний", "Языки: LISP, Prolog"],
+                causes: ["Развитие математики и логики", "Первые компьютеры", "Потребность в автоматизации экспертных знаний", "Исследовательский энтузиазм"],
+                effects: ["Формализация знаний", "Появление ИИ как области", "Первые прикладные системы (медицина, финансы)", "Осознание ограничений правил"],
+                stoppers: ["Хрупкость правил", "Проблема комбинаторного взрыва", "Трудность получения знаний от экспертов", "Высокая стоимость разработки"]
+            },
+            external: "Холодная война и гонка технологий (1950–1980-е)"
+        },
+        {
+            id: 1, title: "Статистический ИИ", subtitle: "и машинное обучение", years: "1990–2000-е", yearPoint: "1990", colClass: "c2",
+            short: { tech: "Статистика и ML", causes: "Интернет и данные", effects: "Реальные данные и поиск", stoppers: "Переобучение" },
+            details: {
+                tech: ["Статистические методы", "Машинное обучение", "Байесовские сети", "SVM, Деревья решений", "Кластеризация"],
+                causes: ["Появление интернета (1991)", "Рост доступности данных", "Развитие вычислительных мощностей", "Статистическая революция"],
+                effects: ["Доступ к реальным данным", "Улучшение качества моделей", "Применение в поиске, спам-фильтрах, рекомендациях", "Переход от правил к обучению"],
+                stoppers: ["Низкая точность на сложных задачах", "Переобучение", "Зависимость от ручной настройки признаков", "Ограниченная масштабируемость"]
+            },
+            external: "Появление интернета и развитие Web 1.0 (1990-е)"
+        },
+        {
+            id: 2, title: "Глубокое обучение", subtitle: "и эра Big Data", years: "2010–2016", yearPoint: "2010", colClass: "c3",
+            short: { tech: "Глубокие нейросети", causes: "Big Data и GPU", effects: "Прорыв в CV и NLP", stoppers: "Требования к железу" },
+            details: {
+                tech: ["Глубокие нейросети (CNN, RNN)", "Big Data и распределённые вычисления", "GPU-ускорение", "Фреймворки: CUDA, TensorFlow"],
+                causes: ["Взрывной рост данных (Big Data)", "Дешёвое хранение", "GPU и облачные вычисления", "Успехи в распознавании изображений и речи"],
+                effects: ["Прорыв в распознавании изображений (ImageNet)", "Развитие голосовых ассистентов", "Беспилотные авто, рекомендательные системы", "Интерес к генеративным моделям"],
+                stoppers: ["Нехватка размеченных данных", "Высокие требования к железу", "«Чёрный ящик» нейросетей", "Энергопотребление", "Безопасность и предвзятость"]
+            },
+            external: "Web 2.0, социальные сети и мобильный интернет (2000–2010-е)"
+        },
+        {
+            id: 3, title: "Трансформеры", subtitle: "и LLM революция", years: "2017–2020", yearPoint: "2017", colClass: "c4",
+            short: { tech: "Трансформеры (LLM)", causes: "Масштабные тексты", effects: "Универсальные ИИ", stoppers: "Галлюцинации" },
+            details: {
+                tech: ["Трансформеры (Attention)", "Предобучение на больших корпусах", "Модели: BERT, GPT, T5", "Мультимодальность зарождается"],
+                causes: ["Масштабные текстовые данные", "Идея трансформеров (2017)", "Рост вычислительных мощностей", "Потребность в универсальных моделях"],
+                effects: ["Универсальные языковые модели", "Резкий рост качества генерации", "Появление новых продуктов (чат-боты, копилоты)", "Демократизация ИИ"],
+                stoppers: ["Галлюцинации моделей", "Высокая стоимость обучения", "Смещение и токсичность", "Ограниченность контекста"]
+            },
+            external: "Облачные вычисления и доступность GPU (2010–2020-е)"
+        },
+        {
+            id: 4, title: "Инструментальный ИИ", subtitle: "и API-экономика", years: "2021–2023", yearPoint: "2021", colClass: "c5",
+            short: { tech: "RAG и API", causes: "Запрос на практику", effects: "AI в бизнес-процессах", stoppers: "Утечки и интеграция" },
+            details: {
+                tech: ["RAG (Retrieval Augmented Generation)", "Оркестрация агентов", "Инструменты и API", "Fine-tuning, LoRA", "Плагины, функции, память"],
+                causes: ["Потребность в практической применимости", "Доступ к моделям через API", "Рост сообщества и экосистемы", "Запрос на надёжность и контекст"],
+                effects: ["Интеграция ИИ в бизнес-процессы", "Рост продуктивности", "Появление AI-ассистентов", "Расширение контекста моделей"],
+                stoppers: ["Ненадёжность источников в RAG", "Сложность интеграции", "Безопасность и утечки данных", "Зависимость от внешних сервисов", "Контроль и объяснимость"]
+            },
+            external: "Платформизация ИИ и API-экономика (2020–2023)"
+        },
+        {
+            id: 5, title: "Мультиагентные", subtitle: "системы", years: "2024+", yearPoint: "2024", colClass: "c6",
+            short: { tech: "Агенты и графы", causes: "Сложные задачи", effects: "Автономные процессы", stoppers: "Сложность контроля" },
+            details: {
+                tech: ["Мультиагентные системы", "Графы знаний", "Долгосрочная память", "Фреймворки: LangChain, AutoGen, Semantic Kernel"],
+                causes: ["Сложность задач реального мира", "Необходимость в координации и специализации", "Запрос на автономность", "Развитие смежных технологий"],
+                effects: ["Решение комплексных задач", "Автономные рабочие процессы", "Комбинация символических и нейросетевых подходов", "Появление ИИ-экосистем"],
+                stoppers: ["Сложность координации агентов", "Отсутствие стандартов", "Риски неконтролируемого поведения", "Этика и ответственность"]
+            },
+            external: "Децентрализация, Web3, векторные базы данных (2023+)"
+        },
+        {
+            id: 6, title: "Будущее ИИ", subtitle: "и суперинтеллект", years: "2025+", yearPoint: "?", colClass: "c7",
+            short: { tech: "AGI и экосистемы", causes: "Глобальные вызовы", effects: "Решение мировых проблем", stoppers: "Риски AGI" },
+            details: {
+                tech: ["Самообучающиеся агенты", "Динамические экосистемы", "Нейросимволические подходы", "Безопасность, выравнивание", "Возможный общий ИИ (AGI)"],
+                causes: ["Экспоненциальный рост мощностей", "Глобальные вызовы (климат, медицина)", "Потребность в автономных системах", "Исследования в области AGI"],
+                effects: ["Потенциал решения глобальных задач", "Появление саморазвивающихся систем", "Новая парадигма взаимодействия человека и ИИ"],
+                stoppers: ["Неопределённость и риски AGI", "Потеря контроля", "Этические дилеммы", "Экономические и социальные последствия"]
+            },
+            external: "Глобальные вызовы и запрос на устойчивое будущее (постоянно)"
+        }
+    ];
+
+    const factors = [
+        { id: "tech", title: "Ключевые технологии", sub: "и подходы", icon: "brain-circuit" },
+        { id: "causes", title: "Ключевые причины", sub: "(что способствовало)", icon: "lightbulb" },
+        { id: "effects", title: "Ключевые следствия", sub: "(что дало импульс)", icon: "book-open-check" },
+        { id: "stoppers", title: "Шоу-стоперы", sub: "(разочарования и преграды)", icon: "triangle-alert", color: "#ef4444" }
+    ];
+
+    const conclusionText = "Эволюция ИИ — это путь от ручных правил к обучающимся моделям, от одиночных систем к коллективному интеллекту, от узких задач к универсальности и автономности. Будущее ИИ зависит не только от технологий, но и от нашего выбора сегодня.";
+
+    // Генерация сетки
+    function renderMainGrid() {
+        const grid = document.getElementById('main-grid');
+        let html = '';
+
+        // 1 строка: Пустая угловая ячейка + Заголовки колонок
+        html += `<div class="row-header" style="background: transparent;"><div>ЭТАПЫ ЭВОЛЮЦИИ</div></div>`;
+        stages.forEach((stage, i) => {
+            html += `
+                <div class="col-header ${stage.colClass} zoomable" onclick="openStageModal(${i})">
+                    <div class="step-num">${i + 1}</div>
+                    <h3>${stage.title}</h3>
+                </div>
+            `;
+        });
+
+        // Строка Таймлайна
+        html += `<div class="timeline-row">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-line dashed"></div>
+                    <div></div>`; // пустая ячейка слева
+        stages.forEach(stage => {
+            html += `<div class="t-point"><div class="t-dot"></div><div class="t-year">${stage.yearPoint}</div></div>`;
+        });
+        html += `</div>`;
+
+        // Строки с факторами
+        factors.forEach(factor => {
+            html += `
+                <div class="row-header zoomable" onclick="openFactorModal('${factor.id}')">
+                    <div class="icon-wrapper" ${factor.color ? `style="color:${factor.color}"` : ''}><i data-lucide="${factor.icon}"></i></div>
+                    <div>${factor.title}</div>
+                    <div class="sub">${factor.sub}</div>
+                </div>
+            `;
+            stages.forEach(stage => {
+                html += `<div class="cell">${stage.short[factor.id]}</div>`;
+            });
+        });
+
+        grid.innerHTML = html;
+        lucide.createIcons();
+    }
+
+    // Открытие модалки по ЭТАПУ (Колонка)
+    function openStageModal(index) {
+        const stage = stages[index];
+        document.getElementById('modal-title').innerHTML = `${stage.title} <span style="font-weight:400; font-size: 18px;">${stage.subtitle}</span> <span class="years-badge">${stage.years}</span>`;
+        
+        let bodyHtml = `<div class="details-grid cols-2">`;
+        factors.forEach(factor => {
+            let listItems = stage.details[factor.id].map(item => `<li>${item}</li>`).join('');
+            bodyHtml += `
+                <div class="detail-card ${stage.colClass}">
+                    <h4 ${factor.color ? `style="color:${factor.color}"` : `style="color:var(--blue-accent)"`}>
+                        <i data-lucide="${factor.icon}"></i> ${factor.title}
+                    </h4>
+                    <ul>${listItems}</ul>
+                </div>
+            `;
+        });
+        bodyHtml += `</div>`;
+        
+        document.getElementById('modal-body').innerHTML = bodyHtml;
+
+        document.getElementById('modal-footer').innerHTML = `
+            <div class="modal-external"><i data-lucide="globe"></i> <strong>Сквозной внешний фон эпохи:</strong> ${stage.external}</div>
+            <div class="modal-conclusion"><i data-lucide="info" width="32" height="32"></i> <div><strong>Главный вывод:</strong> ${conclusionText}</div></div>
+        `;
+
+        showModal();
+    }
+
+    // Открытие модалки по ФАКТОРУ (Строка)
+    function openFactorModal(factorId) {
+        const factor = factors.find(f => f.id === factorId);
+        document.getElementById('modal-title').innerHTML = `<span ${factor.color ? `style="color:${factor.color}"` : ''}>${factor.title} ${factor.sub}</span>`;
+        
+        let bodyHtml = `<div class="details-grid cols-3">`;
+        stages.forEach((stage, i) => {
+            let listItems = stage.details[factorId].map(item => `<li>${item}</li>`).join('');
+            bodyHtml += `
+                <div class="detail-card ${stage.colClass}">
+                    <h4><span style="opacity:0.5; margin-right:5px;">${i+1}.</span> ${stage.title} <span style="font-size: 12px; font-weight: normal; margin-left: auto;">${stage.years}</span></h4>
+                    <ul>${listItems}</ul>
+                </div>
+            `;
+        });
+        bodyHtml += `</div>`;
+        
+        document.getElementById('modal-body').innerHTML = bodyHtml;
+
+        document.getElementById('modal-footer').innerHTML = `
+            <div class="modal-conclusion"><i data-lucide="info" width="32" height="32"></i> <div><strong>Главный вывод:</strong> ${conclusionText}</div></div>
+        `;
+
+        showModal();
+    }
+
+    function showModal() {
+        lucide.createIcons();
+        document.getElementById('modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Закрытие по клику вне контента
+    document.getElementById('modal').addEventListener('click', function(e) {
+        if(e.target === this) closeModal();
+    });
+
+    // Инициализация
+    renderMainGrid();
+</script>
+
+</body>
+</html>
